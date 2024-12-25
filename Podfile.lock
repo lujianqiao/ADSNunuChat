@@ -1,0 +1,122 @@
+PODS:
+  - Alamofire (5.10.2)
+  - Differentiator (5.0.0)
+  - IQKeyboardManagerSwift (6.2.1)
+  - JXBanner (0.3.6):
+    - JXBanner/Banner (= 0.3.6)
+    - JXBanner/PageControl (= 0.3.6)
+  - JXBanner/Banner (0.3.6):
+    - JXBanner/Banner/API (= 0.3.6)
+    - JXBanner/Banner/Banner (= 0.3.6)
+    - JXBanner/Banner/Cell (= 0.3.6)
+    - JXBanner/Banner/Common (= 0.3.6)
+    - JXBanner/Banner/Transform (= 0.3.6)
+  - JXBanner/Banner/API (0.3.6):
+    - JXBanner/Banner/Cell
+    - JXBanner/PageControl
+  - JXBanner/Banner/Banner (0.3.6):
+    - JXBanner/Banner/API
+    - JXBanner/Banner/Common
+    - JXBanner/Banner/Transform
+  - JXBanner/Banner/Cell (0.3.6)
+  - JXBanner/Banner/Common (0.3.6)
+  - JXBanner/Banner/Transform (0.3.6):
+    - JXBanner/Banner/API
+  - JXBanner/PageControl (0.3.6):
+    - JXPageControl
+  - JXPageControl (0.1.5):
+    - JXPageControl/Common (= 0.1.5)
+    - JXPageControl/Jump (= 0.1.5)
+    - JXPageControl/Transform (= 0.1.5)
+  - JXPageControl/Common (0.1.5)
+  - JXPageControl/Jump (0.1.5):
+    - JXPageControl/Common
+  - JXPageControl/Transform (0.1.5):
+    - JXPageControl/Common
+  - MBProgressHUD (1.2.0)
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - "NSObject+Rx (5.2.2)":
+    - RxSwift (~> 6.2)
+  - RxCocoa (6.6.0):
+    - RxRelay (= 6.6.0)
+    - RxSwift (= 6.6.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - RxGesture (4.0.4):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - RxRelay (6.6.0):
+    - RxSwift (= 6.6.0)
+  - RxSwift (6.6.0)
+  - RZColorfulSwift (0.3.1)
+  - SmartCodable (4.3.2)
+  - SnapKit (5.7.1)
+  - TZImagePickerController (3.8.8):
+    - TZImagePickerController/Basic (= 3.8.8)
+    - TZImagePickerController/Location (= 3.8.8)
+  - TZImagePickerController/Basic (3.8.8)
+  - TZImagePickerController/Location (3.8.8)
+
+DEPENDENCIES:
+  - Alamofire
+  - IQKeyboardManagerSwift (= 6.2.1)
+  - JXBanner
+  - MBProgressHUD (~> 1.2.0)
+  - Moya
+  - "NSObject+Rx (= 5.2.2)"
+  - RxCocoa (= 6.6.0)
+  - RxDataSources (= 5.0.0)
+  - RxGesture (= 4.0.4)
+  - RxSwift (= 6.6.0)
+  - RZColorfulSwift (~> 0.3.0)
+  - SmartCodable
+  - SnapKit
+  - TZImagePickerController
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - Differentiator
+    - IQKeyboardManagerSwift
+    - JXBanner
+    - JXPageControl
+    - MBProgressHUD
+    - Moya
+    - "NSObject+Rx"
+    - RxCocoa
+    - RxDataSources
+    - RxGesture
+    - RxRelay
+    - RxSwift
+    - RZColorfulSwift
+    - SmartCodable
+    - SnapKit
+    - TZImagePickerController
+
+SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
+  IQKeyboardManagerSwift: 0f0ae8935360b4003e6ea1ac7c19898f01e2f7c7
+  JXBanner: 348dbef856e786494cbf30fb45d6b84826f2d3c5
+  JXPageControl: e9487b39e2e58fc17790833214f3b8e935bef98b
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  "NSObject+Rx": 61cf1f7306a73dcef8b36649198af0813ec18dfd
+  RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
+  RxGesture: f3efb47ed2d26a8082f7b660d4a59970e275a7f8
+  RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
+  RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
+  RZColorfulSwift: 0857bd1e887d2c661938e12fdbdd0054d26926a7
+  SmartCodable: 88fbf3d65207c2376fdbce4b080a3d578cb51be8
+  SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+  TZImagePickerController: d084a7b97c82d387e7669dd86dc9a9057500aacf
+
+PODFILE CHECKSUM: 7d2f1d558fcdf651ef8b89906f46b20c2debf971
+
+COCOAPODS: 1.16.2

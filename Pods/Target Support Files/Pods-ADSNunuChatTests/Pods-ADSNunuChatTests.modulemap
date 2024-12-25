@@ -1,0 +1,6 @@
+framework module Pods_ADSNunuChatTests {
+  umbrella header "Pods-ADSNunuChatTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
