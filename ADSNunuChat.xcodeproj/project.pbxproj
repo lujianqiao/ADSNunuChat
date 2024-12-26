@@ -440,6 +440,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ADSNunuChat;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -472,6 +473,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ADSNunuChat;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

@@ -57,3 +57,36 @@ public var isDarkMode: Bool {
     guard #available(iOS 12.0, *) else { return false }
     return UIScreen.main.traitCollection.userInterfaceStyle == .dark
 }
+
+struct ADSConst {
+    
+    /// APP名称
+    static var AppDisplayName: String {
+        let infoDictionary: Dictionary? = Bundle.main.infoDictionary
+        let kAppDisplayName = infoDictionary?["CFBundleDisplayName"] as? String ?? ""
+        return kAppDisplayName
+    }
+    
+    
+    /// APP版本号
+    static var AppCurrentVersion: String {
+        let infoDictionary: Dictionary? = Bundle.main.infoDictionary
+        let kAppCurrentVersion = infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        return kAppCurrentVersion
+    }
+    
+    /// 设备号
+    static var uniqueDeviceID: String {
+        if let uuidString = UserDefaults.standard.object(forKey: "device_uuid") {
+            if let uuid = uuidString as? String {
+                return uuid
+            }
+        }
+        
+        let uuid = UUID().uuidString
+        UserDefaults.standard.setValue(uuid, forKey: "device_uuid")
+        UserDefaults.standard.synchronize()
+        return uuid
+    }
+    
+}
