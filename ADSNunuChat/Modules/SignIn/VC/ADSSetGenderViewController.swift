@@ -69,7 +69,6 @@ class ADSSetGenderViewController: ADSBaseViewController {
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
             let vc = ADSInputUserInfoViewController()
-            vc.type = .userName
             self.navigationController?.pushViewController(vc, animated: true)
         }).disposed(by: rx.disposeBag)
         return btn

@@ -25,6 +25,52 @@ extension UIView {
         self.layer.cornerRadius = radius
         self.layer.masksToBounds = true
     }
+    
+    struct Corners: OptionSet {
+        public let rawValue: Int
+
+        public static let topLeft = Corners(rawValue: 1 << 0)
+        public static let topRight = Corners(rawValue: 1 << 1)
+        public static let bottomLeft = Corners(rawValue: 1 << 2)
+        public static let bottomRight = Corners(rawValue: 1 << 3)
+
+        public static let top: Corners = [.topLeft, .topRight]
+        public static let bottom: Corners = [.bottomLeft, .bottomRight]
+        public static let left: Corners = [.topLeft, .bottomLeft]
+        public static let right: Corners = [.topRight, .bottomRight]
+
+        public static let all: Corners = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+        
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+    /// 切圆角
+    /// - Parameters:
+    ///   - corners: 圆角位置
+    ///   - radius: 幅度
+    func roundedCorners(_ corners: UIView.Corners = .all, radius: CGFloat) {
+        var masks = CACornerMask()
+        if corners.contains(.topLeft) {
+            masks.insert(.layerMinXMinYCorner)
+        }
+        if corners.contains(.topRight) {
+            masks.insert(.layerMaxXMinYCorner)
+        }
+        if corners.contains(.bottomLeft) {
+            masks.insert(.layerMinXMaxYCorner)
+        }
+        if corners.contains(.bottomRight) {
+            masks.insert(.layerMaxXMaxYCorner)
+        }
+        if #available(iOS 11.0, *) {
+            layer.maskedCorners = masks
+        } else {
+            // Fallback on earlier versions
+        }
+        layer.cornerRadius = radius
+        layer.masksToBounds = true
+    }
 }
 // MARK: 动画相关
 public extension UIView {

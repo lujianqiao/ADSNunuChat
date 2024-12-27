@@ -89,4 +89,12 @@ struct ADSConst {
         return uuid
     }
     
+    /// 获取SceneDelegate
+    static func getSceneDelegate() -> SceneDelegate? {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let sceneDelegate = windowScene.delegate as? SceneDelegate else {
+            return nil
+        }
+        return sceneDelegate
+    }
 }

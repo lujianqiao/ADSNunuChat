@@ -6,106 +6,115 @@
 //
 
 import UIKit
+import TZImagePickerController
 
-enum ADSInputUserInfoType {
-    case userName
-    case age
-}
 
 class ADSInputUserInfoViewController: ADSBaseViewController {
 
+    var avatarIamge: UIImage?
+    
     lazy var navBar: ADSSignInNavBar = {
         let bar = ADSSignInNavBar(frame: .init(x: 0, y: 0, width: kScreenWidth, height: kNavHeight))
         bar.backgroundColor = .clear
-        if type == .userName {
-            bar.titleLabel.text = "Create a username"
-        } else {
-            bar.titleLabel.text = "How old are you?"
+        if self.navigationController?.viewControllers.count ?? 0 <= 1 {
+            bar.backBtn.isHidden = true
         }
         return bar
     }()
     
-    /// 用户信息
-    lazy var infoLabel: UILabel = {
-        let lab: UILabel = .init()
-        if type == .userName {
-            lab.text = "Username"
-        } else {
-            lab.text = "Age"
-        }
-        lab.textColor = .init(hex: "#0C092A")
-        lab.font = UIFont.systemFont(ofSize: 14)
-        return lab
-    }()
-    
-    lazy var infoBGView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.addCorner(radius: 20)
-        return view
-    }()
-    
-    lazy var infoImageView: UIImageView = {
+    lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
-        image.image = UIImage(named: "sign_in_user")
+        image.image = UIImage(named: "sign_in_vc_bg")
         return image
     }()
     
-    lazy var infoField: UITextField = {
-        let field: UITextField = .init()
-        field.textColor = .init(hex: "#0C092A")
-        field.font = UIFont.systemFont(ofSize: 14)
-        if type == .userName {
-            field.keyboardType = .default
-            field.placeholder = "Your username"
-        } else {
-            field.keyboardType = .numberPad
-        }
-        return field
+    lazy var BGView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.roundedCorners([.topLeft, .topRight], radius: 16)
+        return view
     }()
     
-    /// 下一步
-    lazy var nextBtn: UIButton = {
+    lazy var signInView: UIImageView = {
+        let image: UIImageView = .init()
+        image.image = UIImage(named: "sign_up_icon")
+        return image
+    }()
+    
+    lazy var notHaveAccountLab: UILabel = {
+        let lab: UILabel = .init()
+        lab.rz.colorfulConfer { confer in
+            confer.text("Already have an account? Sign in")?.textColor(.init(hex: "#969696")).font(.systemFont(ofSize: 12))
+            confer.text(" Sign in")?.textColor(.init(hex: "#FF2C2C")).font(.systemFont(ofSize: 12, weight: .bold)).tapActionByLable("notHaveAccountLab")
+        }
+        lab.rz.tapAction {[weak self] label, tapActionId, range in
+            guard let self = self else { return }
+            let vc = ADSSignInViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        return lab
+    }()
+    
+    lazy var avatarLabel: UILabel = {
+        let lab: UILabel = .init()
+        lab.text = "Set your avatar"
+        lab.textColor = .init(hex: "#969696")
+        lab.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        return lab
+    }()
+    
+    lazy var skipBtn: UIButton = {
         let btn: UIButton = .init()
-        btn.setTitle("Next", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        btn.addCorner(radius: 20)
+        btn.setImage(UIImage(named: "skip"), for: .normal)
+        return btn
+    }()
+    
+    lazy var selectAvatarBtn: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(UIImage(named: "avatar_select"), for: .normal)
+        btn.setBackgroundImage(.init(named: "avatar_bg"), for: .normal)
+        btn.addCorner(radius: 15)
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
-            
-            if self.type == .userName {
-                let vc = ADSInputUserInfoViewController()
-                vc.type = .age
-                self.navigationController?.pushViewController(vc, animated: true)
-            } else {
-                let vc = ADSAvatarViewController()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-            
+            guard let picker = TZImagePickerController.init(maxImagesCount: 1, delegate: self) else {return}
+            present(picker, animated: true)
         }).disposed(by: rx.disposeBag)
         return btn
     }()
     
-    /// 跳过
-    lazy var skipBtn: UIButton = {
-        let btn: UIButton = .init()
-        btn.setTitle("Skip", for: .normal)
-        btn.setTitleColor(.init(hex: "#858494"), for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        return btn
-    }()
-    
-    lazy var hasAccountLabel: UILabel = {
+    lazy var nameLabel: UILabel = {
         let lab: UILabel = .init()
-        lab.text = ""
-        lab.textColor = .white
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.text = "Nickname"
+        lab.textColor = .init(hex: "#969696")
+        lab.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         return lab
     }()
     
+    lazy var nameField: UITextField = {
+        let field: UITextField = .init()
+        field.placeholder = "Enter your Nickname"
+        field.textColor = .init(hex: "#0C092A")
+        field.font = UIFont.systemFont(ofSize: 14)
+        field.addCorner(radius: 15)
+        field.layer.borderColor = UIColor.black.cgColor
+        field.layer.borderWidth = 2
+        
+        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 10))
+        field.leftView = view
+        field.leftViewMode = .always
+        
+        return field
+    }()
     
-    var type: ADSInputUserInfoType = .userName
+    lazy var startBtn: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(.init(named: "Start_gray"), for: .normal)
+        btn.setImage(.init(named: "Start"), for: .selected)
+        btn.addCorner(radius: 20)
+        btn.setBackgroundImage(.init(named: "agree_bg_gray"), for: .normal)
+        btn.setBackgroundImage(.init(named: "agree_bg"), for: .selected)
+        return btn
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,67 +128,85 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
 
 extension ADSInputUserInfoViewController {
     func setUpUI() {
+        
         view.backgroundColor = .init(hex: "#EFEEFC")
+        
+        view.addSubview(BGImage)
+        BGImage.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         view.addSubview(navBar)
         
-        view.addSubview(infoLabel)
-        infoLabel.snp.makeConstraints { make in
-            make.left.equalTo(24)
-            make.top.equalTo(kNavHeight + 24)
+        view.addSubview(BGView)
+        BGView.snp.makeConstraints { make in
+            make.left.bottom.right.equalToSuperview()
+            make.top.equalTo(kStatusBarHeight + 44)
         }
         
-        view.addSubview(infoBGView)
-        infoBGView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(infoLabel.snp.bottom).offset(8)
-            make.height.equalTo(56)
+        BGView.addSubview(signInView)
+        signInView.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(32)
+            make.width.equalTo(108)
+            make.height.equalTo(40)
         }
         
-        infoBGView.addSubview(infoImageView)
-        infoImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(17)
-            make.size.equalTo(CGSize(width: 22, height: 18))
+        BGView.addSubview(notHaveAccountLab)
+        notHaveAccountLab.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(signInView.snp.bottom).offset(8)
         }
         
-        infoBGView.addSubview(infoField)
-        infoField.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(infoImageView.snp.right).offset(17)
-            make.right.equalTo(-17)
+        BGView.addSubview(avatarLabel)
+        avatarLabel.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(notHaveAccountLab.snp.bottom).offset(25)
         }
-        
-        view.addSubview(nextBtn)
-        nextBtn.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(infoBGView.snp.bottom).offset(195)
-            make.height.equalTo(56)
-        }
-        
-        view.addSubview(skipBtn)
+    
+        BGView.addSubview(skipBtn)
         skipBtn.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(nextBtn.snp.bottom).offset(16)
+            make.right.equalTo(-15)
+            make.width.equalTo(52)
+            make.height.equalTo(30)
+            make.centerY.equalTo(avatarLabel)
         }
         
-        view.addSubview(hasAccountLabel)
-        hasAccountLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(-50)
-        }
-        hasAccountLabel.rz.colorfulConfer { confer in
-            confer.text("Already have account")?.textColor(.init(hex: "#7B7890")).font(.systemFont(ofSize: 14))
-            confer.text("  Sign in")?.textColor(.init(hex: "#7C37FA")).font(.systemFont(ofSize: 14)).tapActionByLable("noAccountLabelTap")
-        }
-        hasAccountLabel.rz.tapAction {[weak self] label, tapActionId, range in
-            guard let self = self else { return }
-            if tapActionId == "noAccountLabelTap" {
-                let vc = ADSSignInViewController()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+        BGView.addSubview(selectAvatarBtn)
+        selectAvatarBtn.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(avatarLabel.snp.bottom).offset(8)
+            make.width.height.equalTo(109)
         }
         
-        view.layoutIfNeeded()
-        nextBtn.addGradientLayer(colors: [.init(hex: "#6049FF"), .init(hex: "#BF36FF")], startPoint: .init(x: 0, y: 0), endPoint: .init(x: 1.0, y: 0))
+        BGView.addSubview(nameLabel)
+        nameLabel.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(selectAvatarBtn.snp.bottom).offset(18)
+        }
+        
+        BGView.addSubview(nameField)
+        nameField.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(14)
+            make.top.equalTo(nameLabel.snp.bottom).offset(10)
+            make.height.equalTo(50)
+        }
+        
+        BGView.addSubview(startBtn)
+        startBtn.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.width.equalTo(272)
+            make.height.equalTo(56)
+            make.top.equalTo(nameField.snp.bottom).offset(20)
+        }
+    }
+}
+
+extension ADSInputUserInfoViewController: TZImagePickerControllerDelegate {
+    func imagePickerController(_ picker: TZImagePickerController!, didFinishPickingPhotos photos: [UIImage]!, sourceAssets assets: [Any]!, isSelectOriginalPhoto: Bool) {
+        guard let image = photos.first else { return }
+        selectAvatarBtn.setImage(image, for: .normal)
+        avatarIamge = image
+        
     }
 }

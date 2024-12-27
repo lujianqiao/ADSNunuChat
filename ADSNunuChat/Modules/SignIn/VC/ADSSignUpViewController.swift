@@ -15,37 +15,67 @@ class ADSSignUpViewController: ADSBaseViewController {
     lazy var navBar: ADSSignInNavBar = {
         let bar = ADSSignInNavBar(frame: .init(x: 0, y: 0, width: kScreenWidth, height: kNavHeight))
         bar.backgroundColor = .clear
-        bar.titleLabel.text = "Sign up"
+        if self.navigationController?.viewControllers.count ?? 0 <= 1 {
+            bar.backBtn.isHidden = true
+        }
         return bar
+    }()
+    
+    lazy var BGImage: UIImageView = {
+        let image: UIImageView = .init()
+        image.image = UIImage(named: "sign_in_vc_bg")
+        return image
+    }()
+    
+    lazy var BGView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.roundedCorners([.topLeft, .topRight], radius: 16)
+        return view
+    }()
+    
+    lazy var signInView: UIImageView = {
+        let image: UIImageView = .init()
+        image.image = UIImage(named: "sign_up_icon")
+        return image
+    }()
+    
+    lazy var notHaveAccountLab: UILabel = {
+        let lab: UILabel = .init()
+        lab.rz.colorfulConfer { confer in
+            confer.text("Already have an account? Sign in")?.textColor(.init(hex: "#969696")).font(.systemFont(ofSize: 12))
+            confer.text(" Sign in")?.textColor(.init(hex: "#FF2C2C")).font(.systemFont(ofSize: 12, weight: .bold)).tapActionByLable("notHaveAccountLab")
+        }
+        lab.rz.tapAction {[weak self] label, tapActionId, range in
+            guard let self = self else { return }
+            let vc = ADSSignInViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        return lab
     }()
     
     /// 邮箱
     lazy var emailLabel: UILabel = {
         let lab: UILabel = .init()
-        lab.text = "Email Address"
-        lab.textColor = .init(hex: "#0C092A")
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.text = "Email"
+        lab.textColor = .init(hex: "#969696")
+        lab.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         return lab
-    }()
-    
-    lazy var emailBGView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.addCorner(radius: 20)
-        return view
-    }()
-    
-    lazy var emailImageView: UIImageView = {
-        let image: UIImageView = .init()
-        image.image = UIImage(named: "sign_in_email")
-        return image
     }()
     
     lazy var emailField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Your email address"
+        field.placeholder = "Enter your email"
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
+        field.addCorner(radius: 15)
+        field.layer.borderColor = UIColor.init(hex: "#9B9B9B").cgColor
+        field.layer.borderWidth = 1
+        
+        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 10))
+        field.leftView = view
+        field.leftViewMode = .always
+        
         return field
     }()
     
@@ -53,91 +83,42 @@ class ADSSignUpViewController: ADSBaseViewController {
     lazy var passwordLabel: UILabel = {
         let lab: UILabel = .init()
         lab.text = "Password"
-        lab.textColor = .init(hex: "#0C092A")
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.textColor = .init(hex: "#969696")
+        lab.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         return lab
-    }()
-    
-    lazy var passwordBGView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.addCorner(radius: 20)
-        return view
-    }()
-    
-    lazy var passwordImageView: UIImageView = {
-        let image: UIImageView = .init()
-        image.image = UIImage(named: "sign_in_password")
-        return image
     }()
     
     lazy var passwordField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Your password"
+        field.placeholder = "Enter the password"
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
+        field.addCorner(radius: 15)
+        field.layer.borderColor = UIColor.init(hex: "#9B9B9B").cgColor
+        field.layer.borderWidth = 1
+        
+        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 10))
+        field.leftView = view
+        field.leftViewMode = .always
         return field
     }()
     
-    lazy var showPWBtn: UIButton = {
+    
+    lazy var signInBtn: UIButton = {
         let btn: UIButton = .init()
-        btn.setImage(UIImage(named: "sign_in_password_hidden"), for: .normal)
-        btn.setImage(UIImage(named: "sign_in_password_show"), for: .selected)
-        return btn
-    }()
-    
-    /// 确认密码
-    lazy var CPasswordLabel: UILabel = {
-        let lab: UILabel = .init()
-        lab.text = "Confirm password"
-        lab.textColor = .init(hex: "#0C092A")
-        lab.font = UIFont.systemFont(ofSize: 14)
-        return lab
-    }()
-    
-    lazy var CPasswordBGView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.addCorner(radius: 20)
-        return view
-    }()
-    
-    lazy var CPasswordImageView: UIImageView = {
-        let image: UIImageView = .init()
-        image.image = UIImage(named: "sign_in_password")
-        return image
-    }()
-    
-    lazy var CPasswordField: UITextField = {
-        let field: UITextField = .init()
-        field.placeholder = "Confirm password"
-        field.textColor = .init(hex: "#0C092A")
-        field.font = UIFont.systemFont(ofSize: 14)
-        return field
-    }()
-    
-    lazy var CPshowPWBtn: UIButton = {
-        let btn: UIButton = .init()
-        btn.setImage(UIImage(named: "sign_in_password_hidden"), for: .normal)
-        btn.setImage(UIImage(named: "sign_in_password_show"), for: .selected)
-        return btn
-    }()
-    
-    /// 注册
-    lazy var signUpBtn: UIButton = {
-        let btn: UIButton = .init()
-        btn.setTitle("Sign up", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        btn.setImage(.init(named: "Start_gray"), for: .normal)
+        btn.setImage(.init(named: "Start"), for: .selected)
         btn.addCorner(radius: 20)
+        btn.setBackgroundImage(.init(named: "agree_bg_gray"), for: .normal)
+        btn.setBackgroundImage(.init(named: "agree_bg"), for: .selected)
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
-            let vc = ADSSetGenderViewController()
+            let vc = ADSInputUserInfoViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }).disposed(by: rx.disposeBag)
         return btn
     }()
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,119 +133,69 @@ class ADSSignUpViewController: ADSBaseViewController {
 extension ADSSignUpViewController {
     func setUpUI() {
         view.backgroundColor = .init(hex: "#EFEEFC")
+        
+        view.addSubview(BGImage)
+        BGImage.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         view.addSubview(navBar)
-        navBar.snp.makeConstraints { make in
-            make.left.top.right.equalToSuperview()
-            make.height.equalTo(kNavHeight)
+        
+        view.addSubview(BGView)
+        BGView.snp.makeConstraints { make in
+            make.left.bottom.right.equalToSuperview()
+            make.top.equalTo(kStatusBarHeight + 44)
         }
-        view.addSubview(emailLabel)
+        
+        BGView.addSubview(signInView)
+        signInView.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(32)
+            make.width.equalTo(108)
+            make.height.equalTo(40)
+        }
+        
+        BGView.addSubview(notHaveAccountLab)
+        notHaveAccountLab.snp.makeConstraints { make in
+            make.left.equalTo(14)
+            make.top.equalTo(signInView.snp.bottom).offset(8)
+        }
+        
+        
+        BGView.addSubview(emailLabel)
         emailLabel.snp.makeConstraints { make in
-            make.left.equalTo(24)
-            make.top.equalTo(kNavHeight + 68)
+            make.left.equalTo(14)
+            make.top.equalTo(notHaveAccountLab.snp.bottom).offset(25)
         }
         
-        view.addSubview(emailBGView)
-        emailBGView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(emailLabel.snp.bottom).offset(8)
-            make.height.equalTo(56)
-        }
-        
-        emailBGView.addSubview(emailImageView)
-        emailImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(17)
-            make.size.equalTo(CGSize(width: 22, height: 18))
-        }
-        
-        emailBGView.addSubview(emailField)
+        BGView.addSubview(emailField)
         emailField.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(emailImageView.snp.right).offset(17)
-            make.right.equalTo(-17)
+            make.left.right.equalToSuperview().inset(14)
+            make.top.equalTo(emailLabel.snp.bottom).offset(10)
+            make.height.equalTo(50)
         }
         
-        view.addSubview(passwordLabel)
+        BGView.addSubview(passwordLabel)
         passwordLabel.snp.makeConstraints { make in
-            make.left.equalTo(24)
-            make.top.equalTo(emailBGView.snp.bottom).offset(16)
+            make.left.equalTo(14)
+            make.top.equalTo(emailField.snp.bottom).offset(20)
         }
+    
         
-        view.addSubview(passwordBGView)
-        passwordBGView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(passwordLabel.snp.bottom).offset(8)
-            make.height.equalTo(56)
-        }
-        
-        passwordBGView.addSubview(passwordImageView)
-        passwordImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(19)
-            make.size.equalTo(CGSize(width: 18, height: 22))
-        }
-        
-        passwordBGView.addSubview(passwordField)
+        BGView.addSubview(passwordField)
         passwordField.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(emailImageView.snp.right).offset(17)
-            make.right.equalTo(-50)
+            make.left.right.equalToSuperview().inset(14)
+            make.top.equalTo(passwordLabel.snp.bottom).offset(10)
+            make.height.equalTo(50)
         }
         
-        passwordBGView.addSubview(showPWBtn)
-        showPWBtn.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.right.equalTo(-16)
-            make.width.height.equalTo(30)
-        }
-        
-        view.addSubview(CPasswordLabel)
-        CPasswordLabel.snp.makeConstraints { make in
-            make.left.equalTo(24)
-            make.top.equalTo(passwordBGView.snp.bottom).offset(16)
-        }
-        
-        view.addSubview(CPasswordBGView)
-        CPasswordBGView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(CPasswordLabel.snp.bottom).offset(8)
+        BGView.addSubview(signInBtn)
+        signInBtn.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.width.equalTo(272)
             make.height.equalTo(56)
+            make.top.equalTo(passwordField.snp.bottom).offset(20)
         }
         
-        CPasswordBGView.addSubview(CPasswordImageView)
-        CPasswordImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(19)
-            make.size.equalTo(CGSize(width: 18, height: 22))
-        }
-        
-        CPasswordBGView.addSubview(CPasswordField)
-        CPasswordField.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalTo(CPasswordImageView.snp.right).offset(17)
-            make.right.equalTo(-50)
-        }
-        
-        CPasswordBGView.addSubview(CPshowPWBtn)
-        CPshowPWBtn.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.right.equalTo(-16)
-            make.width.height.equalTo(30)
-        }
-        
-        
-        
-        view.addSubview(signUpBtn)
-        signUpBtn.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(24)
-            make.top.equalTo(CPasswordBGView.snp.bottom).offset(24)
-            make.height.equalTo(56)
-        }
-        
-        
-       
-        
-        view.layoutIfNeeded()
-        signUpBtn.addGradientLayer(colors: [.init(hex: "#6049FF"), .init(hex: "#BF36FF")], startPoint: .init(x: 0, y: 0), endPoint: .init(x: 1.0, y: 0))
     }
 }
