@@ -92,6 +92,16 @@ class ADSMineViewController: ADSBaseViewController {
         return lab
     }()
     
+    lazy var walletView: ADSADSMineWallteView = {
+        let view = ADSADSMineWallteView()
+        return view
+    }()
+    
+    lazy var updateView: ADSMinePersonalUpdateView = {
+        let view = ADSMinePersonalUpdateView()
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
@@ -165,6 +175,21 @@ extension ADSMineViewController {
         followingLabel.snp.makeConstraints { make in
             make.centerY.equalTo(lineView)
             make.left.equalTo(lineView.snp.right).offset(14)
+        }
+        
+        scroll.addSubview(walletView)
+        walletView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(13.scale)
+            make.top.equalTo(lineView.snp.bottom).offset(8)
+            make.size.equalTo(CGSize(width: kScreenWidth - 26.scale, height: 66))
+        }
+        
+        scroll.addSubview(updateView)
+        updateView.snp.makeConstraints { make in
+            make.left.equalTo(0)
+            make.top.equalTo(walletView.snp.bottom).offset(21)
+            make.width.equalTo(kScreenWidth)
+            make.height.equalTo(115)
         }
     }
 }
