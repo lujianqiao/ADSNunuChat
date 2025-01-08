@@ -36,6 +36,7 @@ class ADSADSMineWallteView: UIView {
         btn.positionStyle = .right
         btn.spacingBetweenImageAndTitle = 4
         btn.backgroundColor = .black
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     

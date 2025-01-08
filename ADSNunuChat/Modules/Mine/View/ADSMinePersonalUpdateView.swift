@@ -6,15 +6,24 @@
 //
 
 import UIKit
+import RxSwift
 
 class ADSMinePersonalUpdateView: UIView {
 
+    var updateBlock: ((Int) -> Void)?
+    
     /// 收藏
     lazy var collView: UIView = {
         let view = UIView()
         view.addCorner(radius: 20)
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let block = self.updateBlock {
+                block(0)
+            }
+        }).disposed(by: rx.disposeBag)
         return view
     }()
     
@@ -28,7 +37,7 @@ class ADSMinePersonalUpdateView: UIView {
         let lab: UILabel = .init()
         lab.text = "My \n Collections"
         lab.textColor = .black
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         lab.numberOfLines = 0
         lab.textAlignment = .center
         return lab
@@ -43,6 +52,7 @@ class ADSMinePersonalUpdateView: UIView {
         btn.positionStyle = .right
         btn.spacingBetweenImageAndTitle = 2
         btn.backgroundColor = .black
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     
@@ -52,6 +62,12 @@ class ADSMinePersonalUpdateView: UIView {
         view.addCorner(radius: 20)
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let block = self.updateBlock {
+                block(1)
+            }
+        }).disposed(by: rx.disposeBag)
         return view
     }()
     
@@ -65,7 +81,7 @@ class ADSMinePersonalUpdateView: UIView {
         let lab: UILabel = .init()
         lab.text = "My \n Tutorials"
         lab.textColor = .black
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         lab.numberOfLines = 0
         lab.textAlignment = .center
         return lab
@@ -89,6 +105,12 @@ class ADSMinePersonalUpdateView: UIView {
         view.addCorner(radius: 20)
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let block = self.updateBlock {
+                block(2)
+            }
+        }).disposed(by: rx.disposeBag)
         return view
     }()
     
@@ -102,7 +124,7 @@ class ADSMinePersonalUpdateView: UIView {
         let lab: UILabel = .init()
         lab.text = "My \n Moments"
         lab.textColor = .black
-        lab.font = UIFont.systemFont(ofSize: 14)
+        lab.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         lab.numberOfLines = 0
         lab.textAlignment = .center
         return lab

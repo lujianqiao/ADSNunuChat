@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxGesture
 
 extension UIView {
     /// 添加边线
@@ -170,4 +172,34 @@ enum LKRGradientDirection {
         case .vertical: return .init(x: 0, y: 1)
         }
     }
+}
+
+// MARK: View手势相关
+public extension Reactive where Base: UIView {
+    /// 点击手势
+    func tap() -> Observable<Void> {
+        base.isUserInteractionEnabled = true
+        return tapGesture().when(.recognized).intercept.mapToVoid
+    }
+}
+
+public extension ObservableType {
+    /// 转化成空类型
+    var mapToVoid: Observable<Void> {
+        map({ _ in })
+    }
+    /// 拦截点击事件
+    var intercept: Observable<Element> {
+        map({
+            LKRTapIntercept.shared.actionHandler?()
+            return $0
+        })
+    }
+}
+
+public class LKRTapIntercept {
+    public typealias Handler = () -> Void
+    public static let shared: LKRTapIntercept = .init()
+    /// 点击事件的处理
+    public var actionHandler: Handler?
 }

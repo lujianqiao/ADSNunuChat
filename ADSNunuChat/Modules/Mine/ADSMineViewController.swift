@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class ADSMineViewController: ADSBaseViewController {
 
@@ -20,7 +21,8 @@ class ADSMineViewController: ADSBaseViewController {
         let scro = UIScrollView()
         scro.showsVerticalScrollIndicator = false
         scro.showsHorizontalScrollIndicator = false
-        scro.contentSize = .init(width: kScreenWidth, height: 812)
+        scro.contentSize = .init(width: kScreenWidth, height: 812 + 30.scale + kSafeBottomMargin)
+        scro.contentInset = .init(top: 0, left: 0, bottom: 10.scale + kSafeBottomMargin, right: 0)
         return scro
     }()
     
@@ -37,6 +39,11 @@ class ADSMineViewController: ADSBaseViewController {
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 2
         btn.addCorner(radius: 46)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSEditUserInfoViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -45,12 +52,22 @@ class ADSMineViewController: ADSBaseViewController {
         lab.text = "jadon"
         lab.textColor = .black
         lab.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        lab.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSEditUserInfoViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return lab
     }()
     
     lazy var editBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "mine_edit"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSEditUserInfoViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -94,11 +111,36 @@ class ADSMineViewController: ADSBaseViewController {
     
     lazy var walletView: ADSADSMineWallteView = {
         let view = ADSADSMineWallteView()
+        view.rx.tap().subscribe(onNext: {[weak self] item in
+            guard let self = self else { return }
+            let vc = ADSWalletViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return view
     }()
     
     lazy var updateView: ADSMinePersonalUpdateView = {
         let view = ADSMinePersonalUpdateView()
+        view.updateBlock = { [weak self] index in
+            guard let self = self else { return }
+            if index == 0 {
+                let vc = ADSCollectionsVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            } else if index == 1 {
+                
+            } else if index == 2 {
+                let vc = ADSMonentsVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+        return view
+    }()
+    
+    lazy var toolView: ADSMineToolView = {
+        let view = ADSMineToolView()
+        view.addCorner(radius: 16)
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 1
         return view
     }()
     
@@ -108,6 +150,23 @@ class ADSMineViewController: ADSBaseViewController {
         // Do any additional setup after loading the view.
     }
 
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let tabbar = self.tabBarController as? ADSTabBarViewController {
+            tabbar.customTabbar.isHidden = false
+        }
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let tabbar = self.tabBarController as? ADSTabBarViewController {
+            tabbar.customTabbar.isHidden = true
+        }
+    }
+    
     override var preferredNavigationBarHidden: Bool {true}
 
 }
@@ -179,7 +238,7 @@ extension ADSMineViewController {
         
         scroll.addSubview(walletView)
         walletView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(13.scale)
+            make.left.equalTo(13.scale)
             make.top.equalTo(lineView.snp.bottom).offset(8)
             make.size.equalTo(CGSize(width: kScreenWidth - 26.scale, height: 66))
         }
@@ -190,6 +249,34 @@ extension ADSMineViewController {
             make.top.equalTo(walletView.snp.bottom).offset(21)
             make.width.equalTo(kScreenWidth)
             make.height.equalTo(115)
+        }
+        
+        scroll.addSubview(toolView)
+        toolView.snp.makeConstraints { make in
+            make.left.equalTo(15.scale)
+            make.top.equalTo(updateView.snp.bottom).offset(20)
+            make.height.equalTo(64 * 4)
+            make.width.equalTo(kScreenWidth - 30.scale)
+        }
+        
+        
+        toolView.itemSelectBlock = {[weak self] type in
+            guard let self = self else { return }
+            switch type {
+            case .setting:
+                let vc = ADSSettingViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            case .blackList:
+                let vc = ADSBlackListViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            case .account:
+                let vc = ADSAccountViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            case .call:
+                let vc = ADSCallRecordsVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            
+            }
         }
     }
 }

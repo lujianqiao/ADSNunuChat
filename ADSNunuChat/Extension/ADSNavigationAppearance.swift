@@ -11,11 +11,11 @@ public class ADSNavigationAppearance {
     public typealias GlobalHandler = () -> Void
     public static let appearance: ADSNavigationAppearance = .init()
     /// title color
-    public var titleColor: UIColor = .white
+    public var titleColor: UIColor = .black
     /// title font
     public var titleFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
     /// 背景颜色 - 不支持暗黑模式
-    public var backgroundColor: UIColor = .init(hex: "#1D1C23")
+    public var backgroundColor: UIColor = .clear
     /// 背景图片 - 支持暗黑模式
     public var backgroundImage: UIImage?
     /// 返回按钮图标
