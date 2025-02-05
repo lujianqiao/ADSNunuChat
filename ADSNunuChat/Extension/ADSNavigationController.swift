@@ -17,6 +17,7 @@ open class ADSNavigationController: UINavigationController {
         if let gestureRecognizer = self.interactivePopGestureRecognizer {
             gestureRecognizer.delegate = self
         }
+        self.delegate = self
     }
     
     open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
@@ -33,8 +34,10 @@ open class ADSNavigationController: UINavigationController {
             backBtn.addTarget(self, action: #selector(backAction), for: .touchUpInside)
             let backItem = UIBarButtonItem(customView: backBtn)
             viewController.navigationItem.leftBarButtonItem = backItem
+            
         }
     }
+    
     
     @objc
     func backAction() {
@@ -71,6 +74,16 @@ extension ADSNavigationController: UINavigationControllerDelegate {
                 interactivePopGestureRecognizer.isEnabled = true
             } else {
                 interactivePopGestureRecognizer.isEnabled = false
+            }
+        }
+        
+        if viewControllers.count > 1 {
+            if let tabbar = self.tabBarController as? ADSTabBarViewController {
+                tabbar.customTabbar.isHidden = true
+            }
+        } else {
+            if let tabbar = self.tabBarController as? ADSTabBarViewController {
+                tabbar.customTabbar.isHidden = false
             }
         }
     }

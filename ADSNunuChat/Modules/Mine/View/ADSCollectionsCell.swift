@@ -72,6 +72,46 @@ class ADSCollectionsCell: UITableViewCell {
         return btn
     }()
     
+    lazy var imageOne: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(.init(named: "mine_lock"), for: .normal)
+        btn.addCorner(radius: 10)
+        btn.layer.borderColor = UIColor.black.cgColor
+        btn.layer.borderWidth = 2
+        btn.backgroundColor = .black.withAlphaComponent(0.1)
+        return btn
+    }()
+    
+    lazy var imageTwo: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(.init(named: "mine_lock"), for: .normal)
+        btn.addCorner(radius: 10)
+        btn.layer.borderColor = UIColor.black.cgColor
+        btn.layer.borderWidth = 1
+        btn.backgroundColor = .black.withAlphaComponent(0.1)
+        return btn
+    }()
+    
+    lazy var imageThree: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(.init(named: "mine_lock"), for: .normal)
+        btn.addCorner(radius: 10)
+        btn.layer.borderColor = UIColor.black.cgColor
+        btn.layer.borderWidth = 1
+        btn.backgroundColor = .black.withAlphaComponent(0.1)
+        return btn
+    }()
+    
+    lazy var unlockBtn: ADSButton = {
+        let btn: ADSButton = .init()
+        btn.setBackgroundImage(.init(named: "mine_unlock_bg"), for: .normal)
+        btn.setImage(UIImage(named: "mine_unlock_icon"), for: .normal)
+        btn.setTitle("Unlock to view", for: .normal)
+        btn.setTitleColor(.black, for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        return btn
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -127,6 +167,36 @@ class ADSCollectionsCell: UITableViewCell {
             make.centerY.equalTo(likeBtn)
             make.right.equalTo(likeBtn.snp.left).offset(-20)
         }
+        
+        bgView.addSubview(imageOne)
+        imageOne.snp.makeConstraints { make in
+            make.left.equalTo(20)
+            make.top.equalTo(2)
+            make.width.equalTo(168)
+            make.height.equalTo(180)
+        }
+        
+        bottomView.addSubview(imageTwo)
+        imageTwo.snp.makeConstraints { make in
+            make.left.equalTo(20)
+            make.bottom.equalTo(-12)
+            make.width.height.equalTo(60)
+        }
+        
+        bottomView.addSubview(imageThree)
+        imageThree.snp.makeConstraints { make in
+            make.left.equalTo(imageTwo.snp.right).offset(10)
+            make.bottom.equalTo(-12)
+            make.width.height.equalTo(60)
+        }
+        
+        bottomView.addSubview(unlockBtn)
+        unlockBtn.snp.makeConstraints { make in
+            make.bottom.equalTo(-20)
+            make.right.equalTo(-10)
+            make.size.equalTo(CGSize(width: 168, height: 44))
+        }
+        
     }
     
     required init?(coder: NSCoder) {

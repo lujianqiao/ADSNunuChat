@@ -127,7 +127,8 @@ class ADSMineViewController: ADSBaseViewController {
                 let vc = ADSCollectionsVC()
                 self.navigationController?.pushViewController(vc, animated: true)
             } else if index == 1 {
-                
+                let vc = ADSMyTutorialsVC()
+                self.navigationController?.pushViewController(vc, animated: true)
             } else if index == 2 {
                 let vc = ADSMonentsVC()
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -151,21 +152,28 @@ class ADSMineViewController: ADSBaseViewController {
     }
 
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if let tabbar = self.tabBarController as? ADSTabBarViewController {
-            tabbar.customTabbar.isHidden = false
-        }
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if let tabbar = self.tabBarController as? ADSTabBarViewController {
-            tabbar.customTabbar.isHidden = true
-        }
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        if let tabbar = self.tabBarController as? ADSTabBarViewController {
+//            tabbar.customTabbar.isHidden = false
+//        }
+//        
+//    }
+//    
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        if let tabbar = self.tabBarController as? ADSTabBarViewController {
+//            tabbar.customTabbar.isHidden = false
+//        }
+//    }
+//    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        if let tabbar = self.tabBarController as? ADSTabBarViewController {
+//            tabbar.customTabbar.isHidden = true
+//        }
+//    }
     
     override var preferredNavigationBarHidden: Bool {true}
 

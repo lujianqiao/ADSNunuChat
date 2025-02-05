@@ -7,23 +7,168 @@
 
 import UIKit
 
-class ADSStoryViewController: UIViewController {
+class ADSStoryViewController: ADSBaseViewController {
 
+    lazy var bgImage: UIImageView = {
+        let image: UIImageView = .init()
+        image.image = UIImage(named: "sign_in_vc_bg")
+        return image
+    }()
+    
+    lazy var titleImage: UIImageView = {
+        let image: UIImageView = .init()
+        image.image = UIImage(named: "story_title")
+        return image
+    }()
+    
+    lazy var addBtn: UIButton = {
+        let btn: UIButton = .init()
+        btn.setImage(UIImage(named: "home_add"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSPublishArticleVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
+        return btn
+    }()
+    
+    lazy var collection: UICollectionView = {
+        let flowLayout: UICollectionViewFlowLayout = .init()
+        flowLayout.scrollDirection = .vertical
+        flowLayout.sectionHeadersPinToVisibleBounds = true
+        let coll: UICollectionView = .init(frame: .zero, collectionViewLayout: flowLayout)
+        coll.backgroundColor = .clear
+        coll.showsHorizontalScrollIndicator = false
+        coll.showsVerticalScrollIndicator = false
+        coll.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: kSafeBottomMargin + 90.scale, right: 20)
+        
+        coll.delegate = self
+        coll.dataSource = self
+        
+        coll.register(ADSStoryTopCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: ADSStoryTopCollectionViewCell.self))
+        coll.register(ADSStoryTitleCell.self, forCellWithReuseIdentifier: String(describing: ADSStoryTitleCell.self))
+        coll.register(ADSStoryItemCell.self, forCellWithReuseIdentifier: String(describing: ADSStoryItemCell.self))
+        
+        return coll
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
+        setUpUI()
         // Do any additional setup after loading the view.
     }
     
+    override var preferredNavigationBarHidden: Bool {true}
 
-    /*
-    // MARK: - Navigation
+}
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+extension ADSStoryViewController {
+    func setUpUI() {
+        
+        view.addSubview(bgImage)
+        bgImage.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        view.addSubview(titleImage)
+        titleImage.snp.makeConstraints { make in
+            make.left.equalTo(20)
+            make.top.equalTo(kStatusBarHeight + 10)
+            make.size.equalTo(CGSize(width: 200, height: 38))
+        }
+        
+        view.addSubview(addBtn)
+        addBtn.snp.makeConstraints { make in
+            make.top.equalTo(kStatusBarHeight)
+            make.right.equalTo(-10)
+            make.width.height.equalTo(44)
+        }
+        
+        view.addSubview(collection)
+        collection.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(titleImage.snp.bottom).offset(10)
+        }
     }
-    */
+}
 
+
+extension ADSStoryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == 0 {
+            return 1
+        } else if section == 1 {
+            return 1
+        } else {
+            return 5
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if indexPath.section == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ADSStoryTopCollectionViewCell.self), for: indexPath) as! ADSStoryTopCollectionViewCell
+            return cell
+        } else if indexPath.section == 1 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ADSStoryTitleCell.self), for: indexPath) as! ADSStoryTitleCell
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ADSStoryItemCell.self), for: indexPath) as! ADSStoryItemCell
+            return cell
+        }
+        
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 2 {
+            let vc = ADSStoryDetailVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+}
+
+extension ADSStoryViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.section == 0 {
+            return .init(width: kScreenWidth, height: 146)
+        } else if indexPath.section == 1 {
+            return .init(width: kScreenWidth, height: 48)
+        } else {
+            return .init(width: 160.scale, height: 254.scale)
+        }
+    }
+    
+        
+    /// 动态设置每个分区的EdgeInsets
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if section == 2 {
+            return UIEdgeInsets(top: 0, left: 2.scale, bottom: 0, right: 2.scale)
+        } else {
+            return .zero
+        }
+    }
+    
+    
+    /// 每行间距
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 8.scale
+    }
+    
+    /// 每列间距
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 2.scale
+    }
+    
+    
+    
+    
 }
