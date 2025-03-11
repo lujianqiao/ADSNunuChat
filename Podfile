@@ -27,6 +27,8 @@ target 'ADSNunuChat' do
   pod 'RxGesture', '4.0.4'
   pod 'NSObject+Rx', '5.2.2'
   
+  # 图片加载
+  pod 'Kingfisher'
   
   target 'ADSNunuChatTests' do
     inherit! :search_paths

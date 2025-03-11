@@ -7,7 +7,7 @@
 
 import UIKit
 import TZImagePickerController
-
+import RxSwift
 
 class ADSInputUserInfoViewController: ADSBaseViewController {
 
@@ -113,6 +113,10 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
         btn.addCorner(radius: 20)
         btn.setBackgroundImage(.init(named: "agree_bg_gray"), for: .normal)
         btn.setBackgroundImage(.init(named: "agree_bg"), for: .selected)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.startBtnAction()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -199,7 +203,62 @@ extension ADSInputUserInfoViewController {
             make.height.equalTo(56)
             make.top.equalTo(nameField.snp.bottom).offset(20)
         }
+        
+        let nameValid = nameField.rx.text.orEmpty.map({$0.count > 0})
+        
+        nameValid.bind(to: startBtn.rx.isEnabled).disposed(by: rx.disposeBag)
+        nameValid.bind(to: startBtn.rx.isSelected).disposed(by: rx.disposeBag)
+        
     }
+    
+    
+    func startBtnAction() {
+        
+        guard let image = avatarIamge else {return}
+        let imageName = "\(Date().timeIntervalSince1970).png"
+        guard let imageData = UIImage.compressData(image: image, maxLength: 1024 * 1024) else {return}
+        
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.uploadFile(imageName, imageData)) { result in
+            
+            hud.hide(animated: true)
+            switch result {
+            case .success(let response):
+                
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {return}
+                guard let imageUrl = data["url"] as? String else {return}
+                self.updateUserInfo(with: imageUrl)
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+        
+    }
+    
+    /// 更新用户信息
+    func updateUserInfo(with avatar: String) {
+        guard let name = nameField.text else {return}
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.updateUserInfo(name, avatar, nil, nil)) { result in
+            hud.hide(animated: true)
+            switch result {
+            case .success(_):
+                
+                let delegate = ADSConst.getSceneDelegate()
+                delegate?.window?.rootViewController = ADSTabBarViewController()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+        
+    }
+    
 }
 
 extension ADSInputUserInfoViewController: TZImagePickerControllerDelegate {

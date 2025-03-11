@@ -60,6 +60,14 @@ public var isDarkMode: Bool {
 
 struct ADSConst {
     
+    static let userTokenKey = "userTokenKey"
+    
+    static let userAccountKey = "userAccountKey"
+    
+    static let userAvatarKey = "userAvatar"
+    
+    static let userChatDataKey = "userChatDataKey"
+    
     /// APP名称
     static var AppDisplayName: String {
         let infoDictionary: Dictionary? = Bundle.main.infoDictionary
@@ -96,5 +104,32 @@ struct ADSConst {
             return nil
         }
         return sceneDelegate
+    }
+    
+    /// 获取信息
+    static func getUserDefaultsData(with key: String) -> String? {
+        let auth = UserDefaults.standard.value(forKey: key) as? String
+        return auth
+    }
+    
+    
+    /// 保存信息
+    static func setUserDefaultsData(with data: String?, key: String) {
+        UserDefaults.standard.set(data, forKey: key)
+        UserDefaults.standard.synchronize()
+    }
+    
+    
+    /// 获取数据
+    static func getUserDefaultsValue(with key: String) -> Data? {
+        let value = UserDefaults.standard.value(forKey: key) as? Data
+        return value
+    }
+    
+    
+    /// 保存数据
+    static func setUserDefaultsValue(with data: Data?, key: String) {
+        UserDefaults.standard.set(data, forKey: key)
+        UserDefaults.standard.synchronize()
     }
 }

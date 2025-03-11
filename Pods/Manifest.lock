@@ -33,6 +33,7 @@ PODS:
     - JXPageControl/Common
   - JXPageControl/Transform (0.1.5):
     - JXPageControl/Common
+  - Kingfisher (8.3.0)
   - MBProgressHUD (1.2.0)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -66,6 +67,7 @@ DEPENDENCIES:
   - Alamofire
   - IQKeyboardManagerSwift (= 6.2.1)
   - JXBanner
+  - Kingfisher
   - MBProgressHUD (~> 1.2.0)
   - Moya
   - "NSObject+Rx (= 5.2.2)"
@@ -85,6 +87,7 @@ SPEC REPOS:
     - IQKeyboardManagerSwift
     - JXBanner
     - JXPageControl
+    - Kingfisher
     - MBProgressHUD
     - Moya
     - "NSObject+Rx"
@@ -104,6 +107,7 @@ SPEC CHECKSUMS:
   IQKeyboardManagerSwift: 0f0ae8935360b4003e6ea1ac7c19898f01e2f7c7
   JXBanner: 348dbef856e786494cbf30fb45d6b84826f2d3c5
   JXPageControl: e9487b39e2e58fc17790833214f3b8e935bef98b
+  Kingfisher: 00841bd9d22a65bb3731f41a1f7715e63788a7aa
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   "NSObject+Rx": 61cf1f7306a73dcef8b36649198af0813ec18dfd
@@ -117,6 +121,6 @@ SPEC CHECKSUMS:
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
   TZImagePickerController: d084a7b97c82d387e7669dd86dc9a9057500aacf
 
-PODFILE CHECKSUM: 7d2f1d558fcdf651ef8b89906f46b20c2debf971
+PODFILE CHECKSUM: 2e0f2f5d5eda58ce87d420edbb28320f2b746f9b
 
 COCOAPODS: 1.16.2

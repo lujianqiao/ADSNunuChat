@@ -113,8 +113,9 @@ class ADSSignUpViewController: ADSBaseViewController {
         btn.setBackgroundImage(.init(named: "agree_bg"), for: .selected)
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
-            let vc = ADSInputUserInfoViewController()
-            self.navigationController?.pushViewController(vc, animated: true)
+            
+            self.signUpAction()
+            
         }).disposed(by: rx.disposeBag)
         return btn
     }()
@@ -195,6 +196,40 @@ extension ADSSignUpViewController {
             make.width.equalTo(272)
             make.height.equalTo(56)
             make.top.equalTo(passwordField.snp.bottom).offset(20)
+        }
+        
+        
+        let emailValid = emailField.rx.text.orEmpty.map({$0.count > 0})
+        let pasd = passwordField.rx.text.orEmpty.map({$0.count > 0})
+        let allValid = Observable.combineLatest(emailValid, pasd) { $0 && $1 }.share(replay: 1)
+        
+        allValid.bind(to: signInBtn.rx.isEnabled).disposed(by: rx.disposeBag)
+        allValid.bind(to: signInBtn.rx.isSelected).disposed(by: rx.disposeBag)
+        
+    }
+    
+    func signUpAction() {
+        
+        guard let account = emailField.text else {return}
+        guard let psd = passwordField.text else {return}
+        let hud = ADSHUD.showHUD()
+        
+        httpProvider.request(.register(account, psd)) { result in
+            
+            hud.hide(animated: true)
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {return}
+                guard let access_token = data["access_token"] as? String else {return}
+                guard let token_type = data["token_type"] as? String else {return}
+                ADSConst.setUserDefaultsData(with: "\(token_type) \(access_token)", key: ADSConst.userTokenKey)
+                let vc = ADSInputUserInfoViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            case .failure(let _):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
         }
         
     }

@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import Kingfisher
 
 class ADSMineViewController: ADSBaseViewController {
 
@@ -152,14 +153,12 @@ class ADSMineViewController: ADSBaseViewController {
     }
 
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//        if let tabbar = self.tabBarController as? ADSTabBarViewController {
-//            tabbar.customTabbar.isHidden = false
-//        }
-//        
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        getUserInfo()
+        
+    }
 //    
 //    override func viewDidAppear(_ animated: Bool) {
 //        super.viewDidAppear(animated)
@@ -287,4 +286,43 @@ extension ADSMineViewController {
             }
         }
     }
+    
+    func getUserInfo() {
+        
+        httpProvider.request(.getUserInfo(nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {return}
+                guard let model = ADSUserInfoModel.deserialize(from: data) else {return}
+                UserInfoManager.share.userInfo = model
+                self.refreshUI(with: model)
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
+    
+    func refreshUI(with model: ADSUserInfoModel) {
+        avatarBtn.kf.setImage(with: URL(string: model.user_header), for: .normal, placeholder: UIImage(named: "mine_avatar_default"))
+        nameLabel.text = model.nick_name
+        IDLabel.text = "ID: \(model.uuid)"
+        
+        followerLabel.rz.colorfulConfer { confer in
+            confer.text("\(model.fans_num)")?.textColor(.black).font(.systemFont(ofSize: 16, weight: .bold))
+            confer.text("  Followers")?.textColor(.black).font(.systemFont(ofSize: 14))
+        }
+        
+        followingLabel.rz.colorfulConfer { confer in
+            confer.text("\(model.follow_num)")?.textColor(.black).font(.systemFont(ofSize: 16, weight: .bold))
+            confer.text("  Following")?.textColor(.black).font(.systemFont(ofSize: 14))
+        }
+        
+        walletView.valueBtn.setTitle("\(model.coins) coins", for: .normal)
+        
+    }
+    
 }
