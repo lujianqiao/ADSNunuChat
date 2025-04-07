@@ -6,9 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
+import TZImagePickerController
 
 class ADSEditUserInfoViewController: ADSBaseViewController {
 
+    var avatarIamge: UIImage?
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -23,6 +27,10 @@ class ADSEditUserInfoViewController: ADSBaseViewController {
         btn.setTitle("Save", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.startBtnAction()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
 
@@ -48,6 +56,12 @@ class ADSEditUserInfoViewController: ADSBaseViewController {
         btn.addCorner(radius: 15)
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 1
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            guard let picker = TZImagePickerController.init(maxImagesCount: 1, delegate: self) else {return}
+            picker.preferredLanguage = "en"
+            present(picker, animated: true)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -124,5 +138,68 @@ extension ADSEditUserInfoViewController {
             make.top.equalTo(nameLabel.snp.bottom).offset(20)
             make.height.equalTo(50)
         }
+        
+        
+        if let userInfoModel = UserInfoManager.share.userInfo {
+            avatarBtn.kf.setImage(with: URL(string: userInfoModel.user_header), for: .normal, placeholder: UIImage(named: "mine_photo"))
+            nameTextField.text = userInfoModel.nick_name
+        }
+    }
+    
+    func startBtnAction() {
+        
+        if let image = avatarIamge {
+            let imageName = "\(Date().timeIntervalSince1970).png"
+            guard let imageData = UIImage.compressData(image: image, maxLength: 1024 * 1024) else {return}
+            
+            
+            let hud = ADSHUD.showHUD()
+            httpProvider.request(.uploadFile(imageName, imageData)) { result in
+                
+                hud.hide(animated: true)
+                switch result {
+                case .success(let response):
+                    
+                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                    guard let data = json["data"] as? [String: Any] else {return}
+                    guard let imageUrl = data["url"] as? String else {return}
+                    self.updateUserInfo(with: imageUrl)
+                    
+                case .failure(_):
+                    ADSHUD.showText(text: "Data anomalies")
+                }
+                
+            }
+        } else {
+            updateUserInfo(with: nil)
+        }
+        
+    }
+    
+    /// 更新用户信息
+    func updateUserInfo(with avatar: String?) {
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.updateUserInfo(nameTextField.text, avatar, nil, nil)) { result in
+            hud.hide(animated: true)
+            switch result {
+            case .success(_):
+                
+                self.navigationController?.popViewController(animated: true)
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+        
+    }
+}
+
+extension ADSEditUserInfoViewController: TZImagePickerControllerDelegate {
+    func imagePickerController(_ picker: TZImagePickerController!, didFinishPickingPhotos photos: [UIImage]!, sourceAssets assets: [Any]!, isSelectOriginalPhoto: Bool) {
+        guard let image = photos.first else { return }
+        avatarBtn.setImage(image, for: .normal)
+        avatarIamge = image
+        
     }
 }

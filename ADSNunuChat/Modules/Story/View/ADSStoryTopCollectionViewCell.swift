@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSStoryTopCollectionViewCell: UICollectionViewCell {
+    
+    private var datas: [ADSHomeListModel] = []
     
     lazy var collection: UICollectionView = {
         let flowLayout: UICollectionViewFlowLayout = .init()
@@ -35,8 +38,15 @@ class ADSStoryTopCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func reloadData(with data: [ADSHomeListModel]) {
+        self.datas = data
+        collection.reloadData()
     }
     
 }
@@ -46,11 +56,12 @@ class ADSStoryTopCollectionViewCell: UICollectionViewCell {
 extension ADSStoryTopCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return datas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ADSStoryTopCollectionViewItemCell.self), for: indexPath) as! ADSStoryTopCollectionViewItemCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
     
@@ -89,6 +100,8 @@ extension ADSStoryTopCollectionViewCell: UICollectionViewDelegateFlowLayout {
 
 
 class ADSStoryTopCollectionViewItemCell: UICollectionViewCell {
+    
+    private var data: ADSHomeListModel = ADSHomeListModel()
     
     lazy var bgView: UIView = {
         let view = UIView(frame: .init(x: 0, y: 0, width: 121, height: 146))
@@ -130,6 +143,10 @@ class ADSStoryTopCollectionViewItemCell: UICollectionViewCell {
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 10)
         btn.spacingBetweenImageAndTitle = 4
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.followAction()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -167,6 +184,46 @@ class ADSStoryTopCollectionViewItemCell: UICollectionViewCell {
             make.top.equalTo(nameLabel.snp.bottom).offset(2)
             make.size.equalTo(CGSize(width: 70, height: 20))
         }
+    }
+    
+    func reloadData(with model: ADSHomeListModel) {
+        self.data = model
+        avatarImage.kf.setImage(with: URL(string: model.user_header), placeholder: UIImage(named: "mine_avatar_default"))
+        nameLabel.text = model.nick_name
+        
+        followBtn.isHidden = model.is_self
+        
+        if model.is_followed {
+            followBtn.setTitle("Followed", for: .normal)
+        } else {
+            followBtn.setTitle("Follow", for: .normal)
+        }
+        
+        
+    }
+    
+    func followAction() {
+        
+        var status: Int = 1
+        status = data.is_followed ? 0 : 1
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.followAction("\(data.user_id)", status)) { result in
+            hud.hide(animated: true)
+            switch result {
+            case .success(_):
+                self.data.is_followed = !self.data.is_followed
+                
+                if self.data.is_followed {
+                    self.followBtn.setTitle("Followed", for: .normal)
+                } else {
+                    self.followBtn.setTitle("Follow", for: .normal)
+                }
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+        
     }
     
     required init?(coder: NSCoder) {

@@ -6,9 +6,14 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSBlackListCell: UITableViewCell {
 
+    var removeBlock: ((String) -> Void)?
+    
+    private var model: ADSUserInfoModel = .init()
+    
     lazy var bgView: UIView = {
         let view = UIView()
         view.addCorner(radius: 10)
@@ -48,6 +53,12 @@ class ADSBlackListCell: UITableViewCell {
         btn.addCorner(radius: 18)
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 1
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let block = self.removeBlock {
+                block("\(self.model.user_id)")
+            }
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -102,6 +113,13 @@ class ADSBlackListCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func reloadData(with model: ADSUserInfoModel) {
+        self.model = model
+        avatarImage.kf.setImage(with: URL(string: model.user_header), placeholder: UIImage(named: "mine_avatar_default"))
+        namelabel.text = model.nick_name
+        IDLabel.text = "ID: \(model.user_id)"
     }
 
 }

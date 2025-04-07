@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSADSMonentsCell: UICollectionViewCell {
     
@@ -79,6 +80,12 @@ class ADSADSMonentsCell: UICollectionViewCell {
         numBtn.snp.makeConstraints { make in
             make.bottom.right.equalToSuperview().inset(8)
         }
+    }
+    
+    func reloadData(with model: ADSHomeListModel) {
+        atavarImage.kf.setImage(with: URL(string: model.user_header), placeholder: UIImage(named: "mine_account"))
+        contentLabel.text = model.content
+        numBtn.setTitle("\(model.praise_num)", for: .normal)
     }
     
     required init?(coder: NSCoder) {

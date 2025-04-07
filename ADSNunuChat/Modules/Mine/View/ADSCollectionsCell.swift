@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSCollectionsCell: UITableViewCell {
 
+    
     lazy var bgView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
@@ -79,6 +81,7 @@ class ADSCollectionsCell: UITableViewCell {
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 2
         btn.backgroundColor = .black.withAlphaComponent(0.1)
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     
@@ -89,6 +92,7 @@ class ADSCollectionsCell: UITableViewCell {
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 1
         btn.backgroundColor = .black.withAlphaComponent(0.1)
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     
@@ -99,6 +103,7 @@ class ADSCollectionsCell: UITableViewCell {
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 1
         btn.backgroundColor = .black.withAlphaComponent(0.1)
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     
@@ -214,4 +219,37 @@ class ADSCollectionsCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    func reloadData(with data: ADSHomeListModel) {
+        avatarImageView.kf.setImage(with: URL(string: data.user_header), placeholder: UIImage(named: "mine_avatar_default"))
+        nameLabel.text = data.nick_name
+        titleLabel.text = data.title
+        contentLabel.text = data.content
+        
+        if data.images.count > 0 {
+            let item = data.images[0]
+            imageOne.kf.setImage(with: URL(string: item), for: .normal, placeholder: .init(named: "mine_lock"))
+        }
+        
+        if data.images.count > 1 {
+            let item = data.images[1]
+            imageTwo.kf.setImage(with: URL(string: item), for: .normal, placeholder: .init(named: "mine_lock"))
+        }
+        
+        if data.images.count > 2 {
+            let item = data.images[2]
+            imageThree.kf.setImage(with: URL(string: item), for: .normal, placeholder: .init(named: "mine_lock"))
+        }
+        
+        likeBtn.setTitle("\(data.praise_num) Like", for: .normal)
+        
+        if data.unlock_price > 0 {
+            unlockBtn.setImage(UIImage(named: "mine_unlock_icon"), for: .normal)
+            unlockBtn.setTitle("Unlock to view", for: .normal)
+        } else {
+            unlockBtn.setImage(UIImage(named: "mine_coll_icon"), for: .normal)
+            unlockBtn.setTitle("View", for: .normal)
+        }
+        
+    }
+    
 }

@@ -95,6 +95,11 @@ class ADSMineViewController: ADSBaseViewController {
             confer.text("125")?.textColor(.black).font(.systemFont(ofSize: 16, weight: .bold))
             confer.text("  Followers")?.textColor(.black).font(.systemFont(ofSize: 14))
         }
+        lab.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSFollowerListViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return lab
     }()
     
@@ -107,6 +112,11 @@ class ADSMineViewController: ADSBaseViewController {
             confer.text("159")?.textColor(.black).font(.systemFont(ofSize: 16, weight: .bold))
             confer.text("  Following")?.textColor(.black).font(.systemFont(ofSize: 14))
         }
+        lab.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSFollowerListViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return lab
     }()
     
@@ -262,7 +272,7 @@ extension ADSMineViewController {
         toolView.snp.makeConstraints { make in
             make.left.equalTo(15.scale)
             make.top.equalTo(updateView.snp.bottom).offset(20)
-            make.height.equalTo(64 * 4)
+            make.height.equalTo(64 * 3)
             make.width.equalTo(kScreenWidth - 30.scale)
         }
         

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSSearchResultCell: UITableViewCell {
 
@@ -82,6 +83,12 @@ class ADSSearchResultCell: UITableViewCell {
             make.width.height.equalTo(16)
         }
         
+        bgView.addSubview(IDLabel)
+        IDLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(IDImage)
+            make.left.equalTo(IDImage.snp.right).offset(4)
+        }
+        
         bgView.addSubview(addBtn)
         addBtn.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -103,6 +110,12 @@ class ADSSearchResultCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func reloadData(with data: ADSUserInfoModel) {
+        avatarImage.kf.setImage(with: URL(string: data.user_header), placeholder: UIImage(named: "mine_avatar_default"))
+        nameLabel.text = data.nick_name
+        IDLabel.text = "\(data.user_id)"
     }
 
 }

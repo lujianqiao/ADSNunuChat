@@ -17,6 +17,32 @@ enum ADSHttp {
     case uploadFile(_ fileName: String, _ fileData: Data)
     case updateUserInfo(_ name: String?, _ avatar: String?, _ sex: String?, _ age: Int?)
     case getUserInfo(_ userID: String?)
+    case getMakeUpList(_ is_self: String, _ page: String, _ page_size: String, _ type: String?, _ user_id: String?, _ keywords: String? = nil)
+    // unlock_price: 0表示免费 大于0就表示需要多少coin
+    case postMakeUp(_ title: String, _ content: String, _ img: String, _ type: String, _ unlock_price: String)
+    
+    case getDressList(_ is_self: String, _ page: String, _ page_size: String, _ user_id: String?)
+    case postDress(_ title: String, _ content: String, _ img: String)
+    
+    /// 状态，1关注，0取消关注
+    case followAction(_ to_user_id: String, _ status: Int)
+    
+    /// 粉丝列表
+    case followerList(_ page: String, _ pageSize: String)
+    case followingList(_ page: String, _ pageSize: String)
+    
+    /// 点赞接口 status: 0 不喜欢，1喜欢
+    case likeAction(_ id: String, _ status: String)
+    /// 点赞列表
+    case likeList(_ page: String, _ page_size: String, _ type: String)
+    /// 注销账号
+    case signOff
+    /// 拉黑或者取消拉黑 status: 1 拉黑，0取消拉黑
+    case blockAction(_ to_user_id: String, _ status: String)
+    /// 拉黑列表
+    case blockList(_ page: String, _ pageSize: String)
+    
+    case getRechargeList
 }
 
 extension ADSHttp: TargetType {
@@ -36,12 +62,55 @@ extension ADSHttp: TargetType {
             return "/meInfoUpdate"
         case .getUserInfo:
             return "/meInfo"
+        case .getMakeUpList:
+            return "/mps"
+        case .postMakeUp:
+            return "/mp/post"
+        case .getDressList:
+            return "/ds"
+        case .postDress:
+            return "/d/post"
+        case .followAction:
+            return "/follow"
+        case .getRechargeList:
+            return "/pConfigs"
+        case .followerList:
+            return "/fans"
+        case .followingList:
+            return "/follows"
+        case .likeAction:
+            return "/mpd/star"
+        case .likeList:
+            return "/mpd/stars"
+        case .signOff:
+            return "/signOff"
+        case .blockAction:
+            return "/blackOne"
+        case .blockList:
+            return "/blacks"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .register, .signin, .uploadFile, .updateUserInfo, .getUserInfo:
+        case .register,
+                .signin,
+                .uploadFile,
+                .updateUserInfo,
+                .getUserInfo,
+                .getMakeUpList,
+                .postMakeUp,
+                .getDressList,
+                .postDress,
+                .followAction,
+                .getRechargeList,
+                .followerList,
+                .followingList,
+                .likeAction,
+                .likeList,
+                .signOff,
+                .blockAction,
+                .blockList:
             return .post
         }
     }
@@ -97,6 +166,130 @@ extension ADSHttp: TargetType {
         
             let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
             return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .getMakeUpList(let is_self, let page, let page_size, let type, let user_id, let keywords):
+            
+            var params: [String: Any] = [:]
+            params["is_self"] = is_self
+            params["page"] = page
+            params["page_size"] = page_size
+            
+            if let type = type {
+                params["type"] = type
+            }
+            
+            
+            if let user_id = user_id {
+                params["user_id"] = user_id
+            }
+            
+            if let keywordsValue = keywords {
+                params["keywords"] = keywords
+            }
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+            
+        case .postMakeUp(let title, let content, let img, let type, let unlock_price):
+            var params: [String: Any] = [:]
+            params["title"] = title
+            params["content"] = content
+            params["img"] = img
+            params["type"] = type
+            params["unlock_price"] = unlock_price
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+            
+        case .getDressList(let is_self, let page, let page_size, let user_id):
+            
+            var params: [String: Any] = [:]
+            params["is_self"] = is_self
+            params["page"] = page
+            params["page_size"] = page_size
+            if let user_id_value = user_id {
+                params["user_id"] = user_id_value
+            }
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+            
+        case .postDress(let title, let content, let img):
+            
+            var params: [String: Any] = [:]
+            params["title"] = title
+            params["content"] = content
+            params["img"] = img
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .followAction(let to_user_id, let status):
+            
+            var params: [String: Any] = [:]
+            params["to_user_id"] = to_user_id
+            params["status"] = status
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .followerList(let page, let pageSize):
+          
+            var params: [String: Any] = [:]
+            params["page"] = page
+            params["page_size"] = pageSize
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .followingList(let page, let pageSize):
+          
+            var params: [String: Any] = [:]
+            params["page"] = page
+            params["page_size"] = pageSize
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .likeAction(let id, let status):
+            var params: [String: Any] = [:]
+            params["id"] = id
+            params["status"] = status
+        
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .likeList(let page, let page_size, let type):
+            var params: [String: Any] = [:]
+            params["page"] = page
+            params["page_size"] = page_size
+            params["type"] = type
+            
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .blockAction(let to_user_id, let status):
+            var params: [String: Any] = [:]
+            params["to_user_id"] = to_user_id
+            params["status"] = status
+            
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .blockList(let page, let page_size):
+            var params: [String: Any] = [:]
+            params["page"] = page
+            params["page_size"] = page_size
+            
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .getRechargeList,
+                .signOff:
+            return .requestCompositeData(bodyData: Data(), urlParameters:[:])
         }
     }
     

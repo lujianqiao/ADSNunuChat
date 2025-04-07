@@ -16,7 +16,7 @@ enum ADSMineToolViewType {
 
 class ADSMineToolView: UIView {
 
-    let datas: [ADSMineToolViewType] = [.call, .account, .blackList, .setting]
+    let datas: [ADSMineToolViewType] = [.account, .blackList, .setting]
     
     var itemSelectBlock: ((ADSMineToolViewType) -> ())?
     

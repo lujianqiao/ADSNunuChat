@@ -224,9 +224,10 @@ extension ADSSignUpViewController {
                 guard let access_token = data["access_token"] as? String else {return}
                 guard let token_type = data["token_type"] as? String else {return}
                 ADSConst.setUserDefaultsData(with: "\(token_type) \(access_token)", key: ADSConst.userTokenKey)
+                ADSConst.setUserDefaultsData(with: psd, key: ADSConst.userPassword)
                 let vc = ADSInputUserInfoViewController()
                 self.navigationController?.pushViewController(vc, animated: true)
-            case .failure(let _):
+            case .failure(_):
                 ADSHUD.showText(text: "Data anomalies")
             }
             

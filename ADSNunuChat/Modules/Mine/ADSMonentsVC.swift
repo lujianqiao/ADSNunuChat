@@ -9,6 +9,8 @@ import UIKit
 
 class ADSMonentsVC: ADSBaseViewController {
 
+    private var datas: [ADSHomeListModel] = []
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -39,6 +41,7 @@ class ADSMonentsVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        getData()
         // Do any additional setup after loading the view.
     }
     
@@ -64,15 +67,34 @@ extension ADSMonentsVC {
         }
         
     }
+    
+    func getData() {
+        httpProvider.request(.getDressList("1", "1", "100", nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSHomeListModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.collectionView.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
 }
 
 // MARK: UICollectionViewDataSource
 extension ADSMonentsVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return datas.count
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ADSADSMonentsCell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ADSADSMonentsCell", for: indexPath) as! ADSADSMonentsCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
 }
@@ -98,5 +120,12 @@ extension ADSMonentsVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLa
     /// 每列间距
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9.scale
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = ADSStoryDetailVC()
+        vc.type = .storyDetail
+        vc.model = datas[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

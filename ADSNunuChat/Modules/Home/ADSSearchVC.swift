@@ -9,6 +9,8 @@ import UIKit
 
 class ADSSearchVC: ADSBaseViewController {
 
+    private var datas: [ADSHomeListModel] = []
+    
     lazy var bgImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -34,7 +36,7 @@ class ADSSearchVC: ADSBaseViewController {
         tab.separatorStyle = .none
         tab.backgroundColor = .clear
         tab.contentInset = .init(top: 0, left: 0, bottom: 0, right: 0)
-        tab.register(ADSSearchResultCell.self, forCellReuseIdentifier: String(describing: ADSSearchResultCell.self))
+        tab.register(ADSCollectionsCell.self, forCellReuseIdentifier: String(describing: ADSCollectionsCell.self))
         return tab
     }()
     
@@ -71,34 +73,59 @@ extension ADSSearchVC {
             make.left.bottom.right.equalToSuperview()
             make.top.equalTo(searchView.snp.bottom).offset(10)
         }
+        
+        searchView.enterField.rx.text.orEmpty.subscribe(onNext: {[weak self] text in
+            guard let self = self else { return }
+            self.requestData(with: text)
+        }).disposed(by: rx.disposeBag)
+    }
+    
+    func requestData(with keywords: String) {
+        guard keywords.isEmpty == false else {
+            datas = []
+            tableview.reloadData()
+            return
+        }
+        httpProvider.request(.getMakeUpList("0", "1", "100", "0", nil, keywords)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSHomeListModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.tableview.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
     }
 }
 
 
 extension ADSSearchVC: UITableViewDelegate, UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 10
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return datas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ADSSearchResultCell.self)) as! ADSSearchResultCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ADSCollectionsCell.self)) as! ADSCollectionsCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return 264 + 15
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 8
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ADSStoryDetailVC()
+        vc.model = datas[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

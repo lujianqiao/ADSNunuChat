@@ -9,6 +9,8 @@ import UIKit
 
 class ADSMyTutorialsVC: ADSBaseViewController {
 
+    private var datas: [ADSHomeListModel] = []
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -35,6 +37,7 @@ class ADSMyTutorialsVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        getData()
         // Do any additional setup after loading the view.
     }
 
@@ -60,15 +63,34 @@ extension ADSMyTutorialsVC {
             make.top.equalTo(10)
         }
     }
+    
+    func getData() {
+        httpProvider.request(.getMakeUpList("1", "1", "100", "0", nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSHomeListModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.tableview.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
 }
 
 extension ADSMyTutorialsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return datas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ADSCollectionsCell.self)) as! ADSCollectionsCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
     

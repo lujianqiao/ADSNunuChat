@@ -77,6 +77,7 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
             guard let picker = TZImagePickerController.init(maxImagesCount: 1, delegate: self) else {return}
+            picker.preferredLanguage = "en"
             present(picker, animated: true)
         }).disposed(by: rx.disposeBag)
         return btn
@@ -214,37 +215,39 @@ extension ADSInputUserInfoViewController {
     
     func startBtnAction() {
         
-        guard let image = avatarIamge else {return}
-        let imageName = "\(Date().timeIntervalSince1970).png"
-        guard let imageData = UIImage.compressData(image: image, maxLength: 1024 * 1024) else {return}
-        
-        
-        let hud = ADSHUD.showHUD()
-        httpProvider.request(.uploadFile(imageName, imageData)) { result in
+        if let image = avatarIamge {
+            let imageName = "\(Date().timeIntervalSince1970).png"
+            guard let imageData = UIImage.compressData(image: image, maxLength: 1024 * 1024) else {return}
             
-            hud.hide(animated: true)
-            switch result {
-            case .success(let response):
+            
+            let hud = ADSHUD.showHUD()
+            httpProvider.request(.uploadFile(imageName, imageData)) { result in
                 
-                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
-                guard let data = json["data"] as? [String: Any] else {return}
-                guard let imageUrl = data["url"] as? String else {return}
-                self.updateUserInfo(with: imageUrl)
+                hud.hide(animated: true)
+                switch result {
+                case .success(let response):
+                    
+                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                    guard let data = json["data"] as? [String: Any] else {return}
+                    guard let imageUrl = data["url"] as? String else {return}
+                    self.updateUserInfo(with: imageUrl)
+                    
+                case .failure(_):
+                    ADSHUD.showText(text: "Data anomalies")
+                }
                 
-            case .failure(_):
-                ADSHUD.showText(text: "Data anomalies")
             }
-            
+        } else {
+            updateUserInfo(with: nil)
         }
         
     }
     
     /// 更新用户信息
-    func updateUserInfo(with avatar: String) {
-        guard let name = nameField.text else {return}
+    func updateUserInfo(with avatar: String?) {
         
         let hud = ADSHUD.showHUD()
-        httpProvider.request(.updateUserInfo(name, avatar, nil, nil)) { result in
+        httpProvider.request(.updateUserInfo(nameField.text, avatar, nil, nil)) { result in
             hud.hide(animated: true)
             switch result {
             case .success(_):

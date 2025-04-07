@@ -17,7 +17,7 @@ class ADSWalletTopView: UIView {
     
     lazy var beansLab: UILabel = {
         let lab: UILabel = .init()
-        lab.text = "200"
+        lab.text = "0"
         lab.textColor = .black
         lab.font = UIFont.systemFont(ofSize: 14)
         return lab

@@ -6,9 +6,31 @@
 //
 
 import UIKit
+import Kingfisher
+
+enum ADSStoryDetailType {
+    case homeDetail
+    case storyDetail
+}
 
 class ADSStoryDetailVC: ADSBaseViewController {
 
+    private let maskViewH: CGFloat = kScreenHeight - kScreenWidth
+    var model: ADSHomeListModel = ADSHomeListModel()
+    var type: ADSStoryDetailType = .homeDetail
+    
+    lazy var menuBtn: UIButton = {
+        let btn: UIButton = .init(frame: .init(x: 0, y: 0, width: 30, height: 30))
+        btn.setImage(UIImage(named: "story_menu"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSStoryMenuAlert()
+            vc.model = self.model
+            vc.alertIn(self, animateType: .scale, completion: nil)
+        }).disposed(by: rx.disposeBag)
+        return btn
+    }()
+    
     lazy var bgImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -47,6 +69,10 @@ class ADSStoryDetailVC: ADSBaseViewController {
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 10)
         btn.spacingBetweenImageAndTitle = 4
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.followAction()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -63,6 +89,11 @@ class ADSStoryDetailVC: ADSBaseViewController {
         image.image = UIImage(named: "story_avatar_default")
         image.contentMode = .scaleAspectFill
         image.addCorner(radius: 5)
+        image.layer.borderWidth = 1
+        image.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.changeImage(with: 0)
+        }).disposed(by: rx.disposeBag)
         return image
     }()
     
@@ -71,6 +102,11 @@ class ADSStoryDetailVC: ADSBaseViewController {
         image.image = UIImage(named: "story_avatar_default")
         image.contentMode = .scaleAspectFill
         image.addCorner(radius: 5)
+        image.layer.borderWidth = 1
+        image.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.changeImage(with: 1)
+        }).disposed(by: rx.disposeBag)
         return image
     }()
     
@@ -79,6 +115,11 @@ class ADSStoryDetailVC: ADSBaseViewController {
         image.image = UIImage(named: "story_avatar_default")
         image.contentMode = .scaleAspectFill
         image.addCorner(radius: 5)
+        image.layer.borderWidth = 1
+        image.rx.tap().subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.changeImage(with: 2)
+        }).disposed(by: rx.disposeBag)
         return image
     }()
     
@@ -93,11 +134,18 @@ class ADSStoryDetailVC: ADSBaseViewController {
     
     lazy var likeBtn: ADSButton = {
         let btn: ADSButton = .init()
-        btn.setImage(UIImage(named: "story_like_select"), for: .normal)
+        btn.setImage(UIImage(named: "story_like_normal"), for: .normal)
+        btn.setImage(UIImage(named: "story_like_select"), for: .selected)
         btn.setTitle("105 likes", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         btn.spacingBetweenImageAndTitle = 4
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.likeAction()
+        }).disposed(by: rx.disposeBag)
+        
+        
         return btn
     }()
     
@@ -113,12 +161,37 @@ class ADSStoryDetailVC: ADSBaseViewController {
     lazy var callBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "story_call"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSVideoViewController()
+            vc.model = self.model
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
+    
+    lazy var maskView: UIView = {
+        let view = UIView(frame: .init(x: 0, y: 0, width: kScreenWidth, height: maskViewH))
+        view.addGradientLayer(colors: [UIColor.init(hex: "#FFC7FD").withAlphaComponent(0), UIColor.init(hex: "#FFC7FD")], startPoint: .init(x: 0, y: 0), endPoint: .init(x: 0, y: 1))
+        return view
+    }()
+    
+    lazy var unlockBtn: ADSButton = {
+        let btn: ADSButton = .init()
+        btn.setBackgroundImage(.init(named: "mine_unlock_bg"), for: .normal)
+        btn.setImage(UIImage(named: "home_unlock"), for: .normal)
+        btn.setTitle("Unlock to view", for: .normal)
+        btn.setTitleColor(.black, for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        return btn
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        reloadData()
         // Do any additional setup after loading the view.
     }
 
@@ -127,6 +200,8 @@ class ADSStoryDetailVC: ADSBaseViewController {
 
 extension ADSStoryDetailVC {
     func setUpUI() {
+        
+        navigationItem.rightBarButtonItem = .init(customView: menuBtn)
         
         view.addSubview(bgImage)
         bgImage.snp.makeConstraints { make in
@@ -214,5 +289,140 @@ extension ADSStoryDetailVC {
             make.top.equalTo(contentLabel.snp.top).offset(106)
             make.width.height.equalTo(55)
         }
+        
+        view.addSubview(maskView)
+        maskView.snp.makeConstraints { make in
+            make.left.bottom.equalToSuperview()
+            make.width.equalTo(kScreenWidth)
+            make.height.equalTo(maskViewH)
+        }
+        
+        maskView.addSubview(unlockBtn)
+        unlockBtn.snp.makeConstraints { make in
+            make.size.equalTo(CGSize(width: 240, height: 55))
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(-95)
+        }
     }
+    
+    func reloadData() {
+        avatarImage.kf.setImage(with: URL(string: model.user_header))
+        nameLabel.text = model.nick_name
+        
+        if model.images.count > 0 {
+            let item = model.images[0]
+            bigImage.kf.setImage(with: URL(string: item))
+            imageOne.layer.borderColor = UIColor.white.cgColor
+            imageOne.layer.borderWidth = 1
+            
+            imageOne.isHidden = false
+            imageOne.kf.setImage(with: URL(string: item))
+        }
+        
+        if model.images.count > 1 {
+            let item = model.images[1]
+            
+            imageTwo.isHidden = false
+            imageTwo.kf.setImage(with: URL(string: item))
+        }
+        
+        if model.images.count > 2 {
+            let item = model.images[2]
+            
+            imageThree.isHidden = false
+            imageThree.kf.setImage(with: URL(string: item))
+        }
+     
+        titleLabel.text = model.title
+        likeBtn.isSelected = model.is_praised
+        likeBtn.setTitle("\(model.praise_num) likes", for: .normal)
+        contentLabel.text = model.content
+        
+        maskView.isHidden = model.unlock_price <= 0
+        unlockBtn.setTitle("\(model.unlock_price) coins to unlock", for: .normal)
+    }
+    
+    func changeImage(with index: Int) {
+        
+        switch index {
+        case 0:
+            if model.images.count > 0 {
+                let item = model.images[0]
+                bigImage.kf.setImage(with: URL(string: item))
+                
+                imageOne.layer.borderColor = UIColor.white.cgColor
+                imageTwo.layer.borderColor = UIColor.clear.cgColor
+                imageThree.layer.borderColor = UIColor.clear.cgColor
+            }
+            
+        case 1:
+            if model.images.count > 1 {
+                let item = model.images[1]
+                bigImage.kf.setImage(with: URL(string: item))
+                
+                imageOne.layer.borderColor = UIColor.clear.cgColor
+                imageTwo.layer.borderColor = UIColor.white.cgColor
+                imageThree.layer.borderColor = UIColor.clear.cgColor
+            }
+            
+        case 2:
+            if model.images.count > 2 {
+                let item = model.images[2]
+                bigImage.kf.setImage(with: URL(string: item))
+                
+                imageOne.layer.borderColor = UIColor.clear.cgColor
+                imageTwo.layer.borderColor = UIColor.clear.cgColor
+                imageThree.layer.borderColor = UIColor.white.cgColor
+            }
+            
+        default:
+            break
+        }
+        
+    }
+    
+    func likeAction() {
+        let status = model.is_praised ? "0" : "1"
+        httpProvider.request(.likeAction(model.id, status)) { result in
+            switch result {
+            case .success(_):
+                self.model.is_praised = !self.model.is_praised
+                if self.model.is_praised {
+                    self.model.praise_num += 1
+                } else {
+                    self.model.praise_num -= 1
+                }
+                
+                self.likeBtn.isSelected = self.model.is_praised
+                self.likeBtn.setTitle("\(self.model.praise_num) likes", for: .normal)
+            case .failure(_):
+                print("")
+            }
+        }
+    }
+    
+    func followAction() {
+        
+        var status: Int = 1
+        status = model.is_followed ? 0 : 1
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.followAction("\(model.user_id)", status)) { result in
+            hud.hide(animated: true)
+            switch result {
+            case .success(_):
+                self.model.is_followed = !self.model.is_followed
+                
+                if self.model.is_followed {
+                    self.followBtn.setTitle("Followed", for: .normal)
+                } else {
+                    self.followBtn.setTitle("Follow", for: .normal)
+                }
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+        
+    }
+    
 }

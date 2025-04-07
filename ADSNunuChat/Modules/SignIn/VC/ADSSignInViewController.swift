@@ -218,10 +218,16 @@ extension ADSSignInViewController {
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
-                guard let data = json["data"] as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {
+                    if let message = json["message"] as? String {
+                        ADSHUD.showText(text: message)
+                    }
+                    return
+                }
                 guard let access_token = data["access_token"] as? String else {return}
                 guard let token_type = data["token_type"] as? String else {return}
                 ADSConst.setUserDefaultsData(with: "\(token_type) \(access_token)", key: ADSConst.userTokenKey)
+                ADSConst.setUserDefaultsData(with: psd, key: ADSConst.userPassword)
                 
                 let delegate = ADSConst.getSceneDelegate()
                 delegate?.window?.rootViewController = ADSTabBarViewController()

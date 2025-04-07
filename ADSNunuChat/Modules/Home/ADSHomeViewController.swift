@@ -10,6 +10,8 @@ import RxSwift
 
 class ADSHomeViewController: ADSBaseViewController {
 
+    private var datas: [ADSHomeListModel] = []
+    
     lazy var bgImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -62,6 +64,11 @@ class ADSHomeViewController: ADSBaseViewController {
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getData()
+    }
+    
     override var preferredNavigationBarHidden: Bool {true}
     
 }
@@ -101,20 +108,45 @@ extension ADSHomeViewController {
             make.top.equalTo(searchView.snp.bottom).offset(4)
         }
     }
+    
+    func getData() {
+        httpProvider.request(.getMakeUpList("0", "1", "100", "0", nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSHomeListModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.tableview.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
 }
 
 
 extension ADSHomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return datas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ADSCollectionsCell.self)) as! ADSCollectionsCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 264 + 15
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ADSStoryDetailVC()
+        vc.model = datas[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

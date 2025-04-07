@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ADSStoryItemCell: UICollectionViewCell {
     
@@ -36,6 +37,7 @@ class ADSStoryItemCell: UICollectionViewCell {
     lazy var avatarImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "mine_avatar_default")
+        image.addCorner(radius: 13)
         return image
     }()
     
@@ -102,6 +104,19 @@ class ADSStoryItemCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func reloadData(with model: ADSHomeListModel) {
+        if let image = model.images.first {
+            photoImage.kf.setImage(with: URL(string: image), placeholder: UIImage(named: "story_avatar_default"))
+        }
+        desLabel.text = model.title
+        
+        avatarImage.kf.setImage(with: URL(string: model.user_header), placeholder: UIImage(named: "mine_avatar_default"))
+        
+        nameLabel.text = model.nick_name
+        
+        likeBtn.setTitle("\(model.praise_num)", for: .normal)
     }
     
 }

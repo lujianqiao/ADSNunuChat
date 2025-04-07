@@ -9,6 +9,8 @@ import UIKit
 
 class ADSBlackListViewController: ADSBaseViewController {
 
+    private var datas: [ADSUserInfoModel] = []
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -35,6 +37,7 @@ class ADSBlackListViewController: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        getData()
         // Do any additional setup after loading the view.
     }
 
@@ -60,16 +63,48 @@ extension ADSBlackListViewController {
             make.top.equalTo(10)
         }
     }
+    
+    func getData() {
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.blockList("1", "100")) { result in
+            hud.hide(animated: true)
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSUserInfoModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.tableview.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+    }
+    
+    /// 取消拉黑
+    func removeBlock(with ID: String) {
+        httpProvider.request(.blockAction("\(ID)", "0")) { result in
+            self.getData()
+        }
+    }
 }
 
 
 extension ADSBlackListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return datas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ADSBlackListCell.self)) as! ADSBlackListCell
+        cell.reloadData(with: datas[indexPath.row])
+        cell.removeBlock = {[weak self] userID in
+            guard let self = self else { return }
+            self.removeBlock(with: userID)
+        }
         return cell
     }
+    
 }

@@ -10,18 +10,13 @@ import RxSwift
 
 class ADSWalletViewController: ADSBaseViewController {
 
+    var datas: [ADSRechargeModel] = []
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
         image.contentMode = .scaleAspectFill
         return image
-    }()
-    
-    lazy var navBar: ADSSignInNavBar = {
-        let bar = ADSSignInNavBar(frame: .init(x: 0, y: 0, width: kScreenWidth, height: kNavHeight))
-        bar.backgroundColor = .clear
-        bar.titleLabel.text = "My wallet"
-        return bar
     }()
     
     lazy var topView: ADSWalletTopView = {
@@ -48,31 +43,28 @@ class ADSWalletViewController: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        getData()
         // Do any additional setup after loading the view.
     }
     
-    override var preferredNavigationBarHidden: Bool {true}
+//    override var preferredNavigationBarHidden: Bool {true}
 
 }
 
 extension ADSWalletViewController {
     func setUpUI() {
         
+        title = "My wallet"
+        
         view.addSubview(BGImage)
         BGImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        view.addSubview(navBar)
-        navBar.snp.makeConstraints { make in
-            make.left.top.right.equalToSuperview()
-            make.height.equalTo(kNavHeight)
-        }
-        
         view.addSubview(topView)
         topView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(navBar.snp.bottom).offset(50)
+            make.top.equalTo(kNavHeight + 50)
             make.size.equalTo(CGSize(width: 345.scale, height: 80.scale))
         }
         
@@ -82,16 +74,42 @@ extension ADSWalletViewController {
             make.top.equalTo(topView.snp.bottom).offset(33)
         }
     }
+    
+    func getData() {
+        
+        if let userInfoModel = UserInfoManager.share.userInfo {
+            topView.beansLab.text = "\(userInfoModel.coins)"
+        }
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.getRechargeList) { result in
+            
+            hud.hide(animated: true)
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [[String: Any]] else {return}
+                guard let models = [ADSRechargeModel].deserialize(from: data) else {return}
+                self.datas = models
+                self.collectionView.reloadData()
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
 }
 
 
 // MARK: UICollectionViewDataSource
 extension ADSWalletViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return datas.count
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ADSWalletCell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ADSWalletCell", for: indexPath) as! ADSWalletCell
+        cell.reloadData(with: datas[indexPath.row])
         return cell
     }
 }
@@ -112,10 +130,10 @@ extension ADSWalletViewController: UICollectionViewDelegate, UICollectionViewDel
     }
     /// 每行间距
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15.scale
+        return 13.scale
     }
     /// 每列间距
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 15.scale
+        return 13.scale
     }
 }

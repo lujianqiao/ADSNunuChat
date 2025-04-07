@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 enum ADSSettingType: String {
     case terms_serves = "Terms of service"
@@ -15,6 +16,8 @@ enum ADSSettingType: String {
 
 class ADSSettingViewController: ADSBaseViewController {
 
+    var rightLab: UILabel?
+    
     lazy var BGImage: UIImageView = {
         let image: UIImageView = .init()
         image.image = UIImage(named: "sign_in_vc_bg")
@@ -29,7 +32,7 @@ class ADSSettingViewController: ADSBaseViewController {
         return view
     }()
     
-    let items: [ADSSettingType] = [.terms_serves, .terms_use, .clear]
+    let items: [ADSSettingType] = [.terms_use, .clear]
     
     lazy var signOutBtn: UIButton = {
         let btn: UIButton = .init()
@@ -38,6 +41,10 @@ class ADSSettingViewController: ADSBaseViewController {
         btn.addCorner(radius: 10)
         btn.layer.borderColor = UIColor.black.cgColor
         btn.layer.borderWidth = 1
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.signOutAction()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -65,6 +72,10 @@ extension ADSSettingViewController {
         
         for (index, item) in items.enumerated() {
             let view = creatItemView(type: item)
+            view.rx.tap().subscribe(onNext: {[weak self] _ in
+                guard let self = self else { return }
+                self.itemAction(with: item)
+            }).disposed(by: rx.disposeBag)
             bgView.addSubview(view)
             view.snp.makeConstraints { make in
                 make.left.right.equalToSuperview().inset(15)
@@ -108,7 +119,7 @@ extension ADSSettingViewController {
         }
         
         let rightLab = UILabel()
-        rightLab.text = "10 M"
+        rightLab.text = "10 MB"
         rightLab.textColor = .init(hex: "#858585")
         rightLab.font = .systemFont(ofSize: 11)
         view.addSubview(rightLab)
@@ -117,8 +128,50 @@ extension ADSSettingViewController {
             make.right.equalTo(rightImage.snp.left).offset(-4)
         }
         rightLab.isHidden = type != .clear
+        getKingfisherCacheSize {[weak rightLab] size in
+            guard let rightLab = rightLab else { return }
+            rightLab.text = size
+        }
+        self.rightLab = rightLab
         
         return view
+    }
+    
+    func signOutAction() {
+        ADSConst.setUserDefaultsData(with: nil, key: ADSConst.userTokenKey)
+        let delegate = ADSConst.getSceneDelegate()
+        delegate?.window?.rootViewController = ADSNavigationController(rootViewController: ADSSignVC())
+    }
+    
+    func itemAction(with type: ADSSettingType) {
+        switch type {
+        case .terms_use:
+            let vc = ADSSignVCProtocolAlert()
+            vc.alertIn(self, animateType: .up, completion: nil)
+        case .clear:
+            KingfisherManager.shared.cache.clearCache()
+            self.rightLab?.text = "0 MB"
+        default:
+            break
+        }
+    }
+    
+    func getKingfisherCacheSize(completion: @escaping (String) -> Void) {
+        // 获取 Kingfisher 的默认缓存
+        let cache = KingfisherManager.shared.cache
+        
+        // 计算缓存大小
+        cache.calculateDiskStorageSize { result in
+            switch result {
+            case .success(let size):
+                // 将缓存大小转换为 MB 或 KB
+                let sizeInMB = Double(size) / 1024.0 / 1024.0
+                completion(String(format: "%.2f MB", sizeInMB))
+            case .failure(let error):
+                print("计算缓存大小失败: \(error.localizedDescription)")
+                completion("0 MB")
+            }
+        }
     }
     
 }

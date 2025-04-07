@@ -44,6 +44,10 @@ class ADSPublishArticleAlert: UIViewController {
         btn.setTitle("got it", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.alertHidden(completion: nil)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     

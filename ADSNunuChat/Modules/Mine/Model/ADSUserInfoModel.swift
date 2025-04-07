@@ -30,5 +30,6 @@ struct ADSUserInfoModel: SmartCodable {
     var uuid: String = ""
     var is_followed: Int = 0
     var coins: Int = 0
+    var email: String = ""
     
 }

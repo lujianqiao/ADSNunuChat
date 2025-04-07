@@ -30,13 +30,14 @@ class ADSADSMineWallteView: UIView {
     lazy var valueBtn: ADSButton = {
         let btn: ADSButton = .init()
         btn.setImage(UIImage(named: "mine_wallte_arrow"), for: .normal)
-        btn.setTitle("150 coins", for: .normal)
+        btn.setTitle("0 coins", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         btn.positionStyle = .right
         btn.spacingBetweenImageAndTitle = 4
         btn.backgroundColor = .black
         btn.isUserInteractionEnabled = false
+        btn.addCorner(radius: 8)
         return btn
     }()
     

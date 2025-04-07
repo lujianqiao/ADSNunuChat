@@ -19,8 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
         initThreeLibrary()
-        let signInVC = ADSNavigationController(rootViewController: ADSSignVC())
-        window?.rootViewController = signInVC
+        
+        if let auth = ADSConst.getUserDefaultsData(with: ADSConst.userTokenKey) {
+            window?.rootViewController = ADSTabBarViewController()
+        } else {
+            let signInVC = ADSNavigationController(rootViewController: ADSSignVC())
+            window?.rootViewController = signInVC            
+        }
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

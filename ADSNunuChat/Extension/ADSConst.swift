@@ -68,6 +68,8 @@ struct ADSConst {
     
     static let userChatDataKey = "userChatDataKey"
     
+    static let userPassword = "userPassword"
+    
     /// APP名称
     static var AppDisplayName: String {
         let infoDictionary: Dictionary? = Bundle.main.infoDictionary
