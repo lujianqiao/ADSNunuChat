@@ -24,4 +24,16 @@ struct ADSHUD {
         return hud
     }
     
+    static func showSuccess(text: String = "", showView: UIView = kWindow ?? UIWindow()) {
+        let hud = MBProgressHUD.showAdded(to: showView, animated: true)
+        hud.mode = .customView
+        hud.label.text = text
+        
+        let image = UIImageView(image: UIImage(named: "Checkmark"))
+        hud.customView = image
+        hud.isSquare = true
+        
+        hud.hide(animated: true, afterDelay: 1)
+    }
+    
 }

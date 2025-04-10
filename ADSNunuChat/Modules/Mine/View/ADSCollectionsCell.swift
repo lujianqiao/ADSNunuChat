@@ -62,12 +62,14 @@ class ADSCollectionsCell: UITableViewCell {
         btn.setTitle("Report", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 10)
+        btn.isHidden = true
         return btn
     }()
     
     lazy var likeBtn: UIButton = {
         let btn: UIButton = .init()
-        btn.setImage(UIImage(named: "mine_like _1"), for: .normal)
+        btn.setImage(UIImage(named: "story_like_normal"), for: .normal)
+        btn.setImage(UIImage(named: "story_like_select"), for: .selected)
         btn.setTitle("Like", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 10)
@@ -114,6 +116,7 @@ class ADSCollectionsCell: UITableViewCell {
         btn.setTitle("Unlock to view", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        btn.isUserInteractionEnabled = false
         return btn
     }()
     
@@ -241,6 +244,7 @@ class ADSCollectionsCell: UITableViewCell {
         }
         
         likeBtn.setTitle("\(data.praise_num) Like", for: .normal)
+        likeBtn.isSelected = data.is_praised
         
         if data.unlock_price > 0 {
             unlockBtn.setImage(UIImage(named: "mine_unlock_icon"), for: .normal)

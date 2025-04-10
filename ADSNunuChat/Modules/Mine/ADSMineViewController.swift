@@ -98,6 +98,7 @@ class ADSMineViewController: ADSBaseViewController {
         lab.rx.tap().subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
             let vc = ADSFollowerListViewController()
+            vc.type = 0
             self.navigationController?.pushViewController(vc, animated: true)
         }).disposed(by: rx.disposeBag)
         return lab
@@ -115,6 +116,7 @@ class ADSMineViewController: ADSBaseViewController {
         lab.rx.tap().subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
             let vc = ADSFollowerListViewController()
+            vc.type = 1
             self.navigationController?.pushViewController(vc, animated: true)
         }).disposed(by: rx.disposeBag)
         return lab

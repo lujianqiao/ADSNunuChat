@@ -219,6 +219,7 @@ class ADSStoryTopCollectionViewItemCell: UICollectionViewCell {
                 } else {
                     self.followBtn.setTitle("Follow", for: .normal)
                 }
+                ADSHUD.showSuccess()
             case .failure(_):
                 ADSHUD.showText(text: "Data anomalies")
             }

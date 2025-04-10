@@ -37,6 +37,10 @@ class ADSSignVCProtocolAlert: UIViewController {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "Agree"), for: .normal)
         btn.setBackgroundImage(.init(named: "agree_bg"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.alertHidden(completion: nil)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     

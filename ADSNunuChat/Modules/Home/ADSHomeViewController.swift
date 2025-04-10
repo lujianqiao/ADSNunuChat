@@ -125,6 +125,21 @@ extension ADSHomeViewController {
             }
             
         }
+        
+        httpProvider.request(.getUserInfo(nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {return}
+                guard let model = ADSUserInfoModel.deserialize(from: data) else {return}
+                UserInfoManager.share.userInfo = model
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
     }
 }
 

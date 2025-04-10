@@ -41,6 +41,10 @@ enum ADSHttp {
     case blockAction(_ to_user_id: String, _ status: String)
     /// 拉黑列表
     case blockList(_ page: String, _ pageSize: String)
+    /// 举报
+    case reportAction(_ userID: String)
+    ///  充值验证
+    case verifyPurchaseProof(_ purchaseId: String, _ receiptData: String, _ transactionId: String, _ env: String = "2")
     
     case getRechargeList
 }
@@ -88,6 +92,10 @@ extension ADSHttp: TargetType {
             return "/blackOne"
         case .blockList:
             return "/blacks"
+        case .reportAction:
+            return "/reportSome"
+        case .verifyPurchaseProof:
+            return "/sub"
         }
     }
     
@@ -110,7 +118,9 @@ extension ADSHttp: TargetType {
                 .likeList,
                 .signOff,
                 .blockAction,
-                .blockList:
+                .blockList,
+                .reportAction,
+                .verifyPurchaseProof:
             return .post
         }
     }
@@ -184,7 +194,7 @@ extension ADSHttp: TargetType {
             }
             
             if let keywordsValue = keywords {
-                params["keywords"] = keywords
+                params["keywords"] = keywordsValue
             }
         
             let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
@@ -284,6 +294,25 @@ extension ADSHttp: TargetType {
             params["page"] = page
             params["page_size"] = page_size
             
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .reportAction(let user_id):
+            var params: [String: Any] = [:]
+            params["user_id"] = user_id
+            params["description"] = ""
+            params["img"] = ""
+            params["type"] = ""
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .verifyPurchaseProof(let purchaseId, let receiptData, let transactionId, let env):
+            
+            var params: [String: Any] = [:]
+            params["purchaseId"] = purchaseId
+            params["receiptData"] = receiptData
+            params["transactionId"] = transactionId
+            params["env"] = env
             let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
             return .requestCompositeData(bodyData: data, urlParameters:[:])
             

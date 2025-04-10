@@ -46,7 +46,7 @@ class ADSMinePersonalUpdateView: UIView {
     lazy var collNumBtn: ADSButton = {
         let btn: ADSButton = .init()
         btn.setImage(UIImage(named: "mine_wallte_arrow_small"), for: .normal)
-        btn.setTitle("0", for: .normal)
+        btn.setTitle(nil, for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         btn.positionStyle = .right
@@ -90,7 +90,7 @@ class ADSMinePersonalUpdateView: UIView {
     lazy var tutorNumBtn: ADSButton = {
         let btn: ADSButton = .init()
         btn.setImage(UIImage(named: "mine_wallte_arrow_small"), for: .normal)
-        btn.setTitle("0", for: .normal)
+        btn.setTitle(nil, for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         btn.positionStyle = .right
@@ -133,7 +133,7 @@ class ADSMinePersonalUpdateView: UIView {
     lazy var monNumBtn: ADSButton = {
         let btn: ADSButton = .init()
         btn.setImage(UIImage(named: "mine_wallte_arrow_small"), for: .normal)
-        btn.setTitle("0", for: .normal)
+        btn.setTitle(nil, for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         btn.positionStyle = .right

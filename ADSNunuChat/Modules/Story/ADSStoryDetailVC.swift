@@ -19,14 +19,17 @@ class ADSStoryDetailVC: ADSBaseViewController {
     var model: ADSHomeListModel = ADSHomeListModel()
     var type: ADSStoryDetailType = .homeDetail
     
+    private let spendDoldAlert = ADSStorySpendGoldAlert()
+    private let rechargeAlert = ADSStoryRechargeTipAlert()
+    private let menuAlert = ADSStoryMenuAlert()
+    
     lazy var menuBtn: UIButton = {
         let btn: UIButton = .init(frame: .init(x: 0, y: 0, width: 30, height: 30))
         btn.setImage(UIImage(named: "story_menu"), for: .normal)
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
-            let vc = ADSStoryMenuAlert()
-            vc.model = self.model
-            vc.alertIn(self, animateType: .scale, completion: nil)
+            self.menuAlert.model = self.model
+            self.menuAlert.alertIn(self, animateType: .scale, completion: nil)
         }).disposed(by: rx.disposeBag)
         return btn
     }()
@@ -184,6 +187,11 @@ class ADSStoryDetailVC: ADSBaseViewController {
         btn.setTitle("Unlock to view", for: .normal)
         btn.setTitleColor(.black, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.spendDoldAlert.data = self.model
+            self.spendDoldAlert.alertIn(self, animateType: .scale, completion: nil)
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
@@ -191,6 +199,7 @@ class ADSStoryDetailVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        itemObservable()
         reloadData()
         // Do any additional setup after loading the view.
     }
@@ -305,8 +314,33 @@ extension ADSStoryDetailVC {
         }
     }
     
+    func itemObservable() {
+        spendDoldAlert.confirmObservable.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let userInfo = UserInfoManager.share.userInfo {
+                if userInfo.coins < self.model.unlock_price {
+                    // 充值
+                    self.rechargeAlert.alertIn(self, animateType: .scale, completion: nil)
+                } else {
+                    // 解锁
+                }
+            }
+        }).disposed(by: spendDoldAlert.rx.disposeBag)
+        
+        rechargeAlert.rechargeObservable.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            let vc = ADSWalletViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }).disposed(by: rx.disposeBag)
+        
+        menuAlert.blockSuccessObservable.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.navigationController?.popViewController(animated: true)
+        }).disposed(by: rx.disposeBag)
+    }
+    
     func reloadData() {
-        avatarImage.kf.setImage(with: URL(string: model.user_header))
+        avatarImage.kf.setImage(with: URL(string: model.user_header), placeholder: UIImage(named: "mine_avatar_default"))
         nameLabel.text = model.nick_name
         
         if model.images.count > 0 {
@@ -340,6 +374,12 @@ extension ADSStoryDetailVC {
         
         maskView.isHidden = model.unlock_price <= 0
         unlockBtn.setTitle("\(model.unlock_price) coins to unlock", for: .normal)
+        
+        if self.model.is_followed {
+            self.followBtn.setTitle("Followed", for: .normal)
+        } else {
+            self.followBtn.setTitle("Follow", for: .normal)
+        }
     }
     
     func changeImage(with index: Int) {
@@ -418,6 +458,8 @@ extension ADSStoryDetailVC {
                 } else {
                     self.followBtn.setTitle("Follow", for: .normal)
                 }
+                
+                ADSHUD.showSuccess()
             case .failure(_):
                 ADSHUD.showText(text: "Data anomalies")
             }

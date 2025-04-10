@@ -78,4 +78,20 @@ class ADSFollowerListTitleView: UIView {
             block(1)
         }
     }
+    
+    func refreshUI(with type: Int) {
+        if type == 0 {
+            followerBtn.isSelected = true
+            followerBtn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+            
+            followingBtn.isSelected = false
+            followingBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        } else {
+            followerBtn.isSelected = false
+            followerBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+            
+            followingBtn.isSelected = true
+            followingBtn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        }
+    }
 }

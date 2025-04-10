@@ -6,9 +6,16 @@
 //
 
 import UIKit
+import RxSwift
+import RxRelay
 
 class ADSStoryMenuAlert: UIViewController {
 
+    var blockSuccessObservable: Observable<Void> {blockSuccessRelay.asObservable()}
+    private let blockSuccessRelay: PublishRelay<Void> = .init()
+    
+    
+    
     var model: ADSHomeListModel = ADSHomeListModel()
     
     lazy var BGView: UIView = {
@@ -50,6 +57,20 @@ class ADSStoryMenuAlert: UIViewController {
         return btn
     }()
     
+    lazy var reportBtn: UIButton = {
+        let btn: UIButton = .init()
+        btn.setTitle("Report", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.backgroundColor = .black
+        btn.addCorner(radius: 23)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            self.reportBtnAction()
+        }).disposed(by: rx.disposeBag)
+        return btn
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
@@ -61,7 +82,7 @@ class ADSStoryMenuAlert: UIViewController {
         view.addSubview(BGView)
         BGView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.size.equalTo(CGSize(width: 295, height: 140)).priority(.low)
+            make.size.equalTo(CGSize(width: 295, height: 180)).priority(.low)
         }
         
         BGView.addSubview(titlelabel)
@@ -76,10 +97,18 @@ class ADSStoryMenuAlert: UIViewController {
             make.width.height.equalTo(30)
         }
         
+        BGView.addSubview(reportBtn)
+        reportBtn.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(-20)
+            make.width.equalTo(225)
+            make.height.equalTo(46)
+        }
+        
         BGView.addSubview(blockBtn)
         blockBtn.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(-20)
+            make.bottom.equalTo(reportBtn.snp.top).offset(-10)
             make.width.equalTo(225)
             make.height.equalTo(46)
         }
@@ -89,6 +118,18 @@ class ADSStoryMenuAlert: UIViewController {
     
     func blockBtnAction() {
         httpProvider.request(.blockAction("\(model.user_id)", "1")) { result in
+            ADSHUD.showSuccess()
+            self.alertHidden {[weak self] _ in
+                guard let self = self else { return }
+                self.blockSuccessRelay.accept(())
+            }
+            
+        }
+    }
+    
+    func reportBtnAction() {
+        httpProvider.request(.reportAction("\(model.user_id)")) { result in
+            ADSHUD.showSuccess()
             self.alertHidden(completion: nil)
         }
     }

@@ -9,7 +9,7 @@ import UIKit
 
 class ADSFollowerListViewController: ADSBaseViewController {
 
-    private var type: Int = 0
+    var type: Int = 0
     private var datas: [ADSUserInfoModel] = []
     
     lazy var BGImage: UIImageView = {
@@ -79,6 +79,8 @@ extension ADSFollowerListViewController {
             make.centerX.equalToSuperview()
             make.size.equalTo(CGSize(width: 170, height: 40))
         }
+        
+        titleView.refreshUI(with: self.type)
         
         bgView.addSubview(tableview)
         tableview.snp.makeConstraints { make in

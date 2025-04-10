@@ -70,6 +70,7 @@ class ADSVideoViewController: ADSBaseViewController {
     lazy var flipBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "story_flip"), for: .normal)
+        btn.isHidden = true
         return btn
     }()
     

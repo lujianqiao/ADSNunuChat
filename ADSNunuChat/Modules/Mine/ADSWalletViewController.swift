@@ -99,6 +99,63 @@ extension ADSWalletViewController {
             
         }
     }
+    
+    func getUserInfo() {
+        
+        httpProvider.request(.getUserInfo(nil)) { result in
+            
+            switch result {
+            case .success(let response):
+                guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {return}
+                guard let model = ADSUserInfoModel.deserialize(from: data) else {return}
+                UserInfoManager.share.userInfo = model
+                self.topView.beansLab.text = "\(model.coins)"
+                
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+            
+        }
+    }
+    
+    
+    func rechargeAction(with model: ADSRechargeModel) {
+        // TODO: -充值
+        let hud = ADSHUD.showHUD(showView: self.view)
+        ADSIAPManager.shared.pay(productId: model.purchase_id) { productId, receipt, transaction in
+            hud.hide(animated: true)
+            
+            // 拿到购买凭证
+            guard let transactionIdentifier = transaction.transactionIdentifier else {return}
+            httpProvider.request(.verifyPurchaseProof(productId, receipt, transactionIdentifier, "2")) { result in
+               
+                switch result {
+                case .success(let response):
+                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+                    guard let code = json["code"] as? Int else {return}
+                    if code == 1 {
+                        // 验证通过
+                        ADSHUD.showText(text: "Purchase Success", showView: self.view)
+                        
+                        self.getUserInfo()
+                        
+                    }
+                case .failure(_):
+                    ADSHUD.showText(text: "Data anomalies")
+                }
+                
+            }
+            
+            debugPrint("receipt")
+        } failed: { error in
+            hud.hide(animated: true)
+            debugPrint(error)
+        } canceled: {
+            hud.hide(animated: true)
+            debugPrint("cancel")
+        }
+    }
 }
 
 
@@ -111,6 +168,11 @@ extension ADSWalletViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ADSWalletCell", for: indexPath) as! ADSWalletCell
         cell.reloadData(with: datas[indexPath.row])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let model = datas[indexPath.row]
+        rechargeAction(with: model)
     }
 }
 // MARK: - UICollectionViewDelegate, UICollectionViewDelegateFlowLayout

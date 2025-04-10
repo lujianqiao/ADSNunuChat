@@ -45,7 +45,7 @@ class ADSCollectionsVC: ADSBaseViewController {
 
 extension ADSCollectionsVC {
     func setUpUI() {
-        title = "Call Records"
+        title = "My Collections"
         view.addSubview(BGImage)
         BGImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
