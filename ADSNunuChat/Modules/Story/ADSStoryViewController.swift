@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class ADSStoryViewController: ADSBaseViewController {
 
@@ -100,8 +101,14 @@ extension ADSStoryViewController {
     }
     
     func getData() {
+        
+        var hud: MBProgressHUD?
+        if datas.count == 0 {
+            hud = ADSHUD.showHUD()
+        }
+        
         httpProvider.request(.getDressList("0", "1", "100", nil)) { result in
-            
+            hud?.hide(animated: true)
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
