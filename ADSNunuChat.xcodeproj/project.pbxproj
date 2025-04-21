@@ -440,7 +440,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ADSNunuChat;
+				INFOPLIST_KEY_CFBundleDisplayName = Koody;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -453,7 +453,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ADS.LUJQ.ADSNunuChat;
+				PRODUCT_BUNDLE_IDENTIFIER = ADS.KD.Koody;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -473,7 +473,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ADSNunuChat;
+				INFOPLIST_KEY_CFBundleDisplayName = Koody;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -486,7 +486,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ADS.LUJQ.ADSNunuChat;
+				PRODUCT_BUNDLE_IDENTIFIER = ADS.KD.Koody;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

@@ -13,6 +13,13 @@ class ADSSignInNavBar: UIView {
     lazy var backBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(.image("nav_back"), for: .normal)
+        btn.rx.tap.subscribe(onNext: {[weak self] _ in
+            guard let self = self else { return }
+            if let rootVC = UIApplication.shared.keyWindow?.rootViewController,
+               let currentVC = rootVC.currentViewController {
+                currentVC.navigationController?.popViewController(animated: true)
+            }
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
