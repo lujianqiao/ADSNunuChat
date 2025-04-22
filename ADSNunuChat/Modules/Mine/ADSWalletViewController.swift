@@ -123,7 +123,7 @@ extension ADSWalletViewController {
     func rechargeAction(with model: ADSRechargeModel) {
         // TODO: -充值
         let hud = ADSHUD.showHUD(showView: self.view)
-        ADSIAPManager.shared.pay(productId: model.purchase_id) { productId, receipt, transaction in
+        ADSIAPNewManager.shared.payAction(productId: model.purchase_id) { productId, receipt, transaction in
             hud.hide(animated: true)
             
             // 拿到购买凭证
@@ -137,23 +137,16 @@ extension ADSWalletViewController {
                     if code == 1 {
                         // 验证通过
                         ADSHUD.showText(text: "Purchase Success", showView: self.view)
-                        
                         self.getUserInfo()
-                        
                     }
                 case .failure(_):
                     ADSHUD.showText(text: "Data anomalies")
                 }
-                
             }
-            
-            debugPrint("receipt")
         } failed: { error in
             hud.hide(animated: true)
-            debugPrint(error)
         } canceled: {
             hud.hide(animated: true)
-            debugPrint("cancel")
         }
     }
 }

@@ -8,21 +8,23 @@
 import Foundation
 import StoreKit
 
-public class ADSIAPManager: NSObject {
-    public typealias Successed = (_ productId: String, _ receipt: String,
+public class ADSIAPNewManager: NSObject {
+    public typealias ADSSuccessed = (_ productId: String, _ receipt: String,
                                   _ transaction: SKPaymentTransaction) -> Void
-    public typealias Failed = (Error) -> Void
-    public typealias Canceled = () -> Void
-    public static let shared: ADSIAPManager = .init()
-    private var successed: Successed?
-    private var failed: Failed?
-    private var canceled: Canceled?
+    public typealias ADSFailed = (Error) -> Void
+    public typealias ADSCanceled = () -> Void
+    public static let shared: ADSIAPNewManager = .init()
+    private var successed: ADSSuccessed?
+    private var failed: ADSFailed?
+    private var canceled: ADSCanceled?
     /// 自动续订成功调用
-    private var renewSuccessed: Successed?
-    private var product: SKProduct?
-    private var request: SKProductsRequest?
-    private var restoreIsSuc: Bool = false
     private var restoreTransaction: SKPaymentTransaction?
+    private var restoreIsSuc: Bool = false
+    private var request: SKProductsRequest?
+    private var renewSuccessed: ADSSuccessed?
+    private var product: SKProduct?
+    
+    
     /// 初始化方法
     private override init() {
         super.init()
@@ -32,12 +34,12 @@ public class ADSIAPManager: NSObject {
     /// - Parameters:
     ///   - productId: 商品id
     ///   - successed: 购买成功的回调
-    ///   - failed: 购买失败的回调
+    ///   - ADSFailed: 购买失败的回调
     ///   - canceled: 取消购买
-    public func pay(productId: String,
-                    successed: @escaping Successed,
-                    failed: @escaping Failed,
-                    canceled: @escaping Canceled) {
+    public func payAction(productId: String,
+                    successed: @escaping ADSSuccessed,
+                    failed: @escaping ADSFailed,
+                    canceled: @escaping ADSCanceled) {
         self.successed = successed
         self.failed = failed
         self.canceled = canceled
@@ -46,24 +48,24 @@ public class ADSIAPManager: NSObject {
         request?.delegate = self
         request?.start()
     }
-    public func restore(successed: @escaping Successed,
-                        failed: @escaping Failed,
-                        canceled: @escaping Canceled) {
+    public func restore(successed: @escaping ADSSuccessed,
+                        ADSFailed: @escaping ADSFailed,
+                        canceled: @escaping ADSCanceled) {
         self.successed = successed
-        self.failed = failed
+        self.failed = ADSFailed
         self.canceled = canceled
         SKPaymentQueue.default().restoreCompletedTransactions()
         SKPaymentQueue.default().add(self)
     }
     /// 自动续费的订阅结果
     /// - Parameter successed: 自动续费成功
-    public func renew(successed: @escaping Successed) {
+    public func renew(successed: @escaping ADSSuccessed) {
         self.renewSuccessed = successed
         SKPaymentQueue.default().add(self)
     }
 }
 // MARK: SKRequestDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver
-extension ADSIAPManager: SKRequestDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+extension ADSIAPNewManager: SKRequestDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         for invalidId in response.invalidProductIdentifiers {
             DispatchQueue.main.async {
@@ -106,7 +108,7 @@ extension ADSIAPManager: SKRequestDelegate, SKProductsRequestDelegate, SKPayment
                 print("iap: paymentQueue purchased")
                 complete(transaction: transaction)
             case .failed:
-                print("iap: paymentQueuefailed")
+                print("iap: paymentQueueADSFailed")
                 if let error = transaction.error {
                     DispatchQueue.main.async {
                         self.failed?(error)
@@ -125,7 +127,7 @@ extension ADSIAPManager: SKRequestDelegate, SKProductsRequestDelegate, SKPayment
         }
     }
     
-    public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
+    public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsADSFailedWithError error: Error) {
         DispatchQueue.main.async {
             self.failed?(error)
         }
