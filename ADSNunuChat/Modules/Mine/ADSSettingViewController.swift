@@ -9,8 +9,8 @@ import UIKit
 import Kingfisher
 
 enum ADSSettingType: String {
-    case terms_serves = "Terms of service"
-    case terms_use = "Terms of use"
+    case terms_use = "User Agreement"
+    case privacy_policy = "Privacy Policy"
     case clear = "Clear cache"
 }
 
@@ -32,7 +32,7 @@ class ADSSettingViewController: ADSBaseViewController {
         return view
     }()
     
-    let items: [ADSSettingType] = [.terms_use, .clear]
+    let items: [ADSSettingType] = [.terms_use, .privacy_policy, .clear]
     
     lazy var signOutBtn: UIButton = {
         let btn: UIButton = .init()
@@ -146,8 +146,11 @@ extension ADSSettingViewController {
     func itemAction(with type: ADSSettingType) {
         switch type {
         case .terms_use:
-            let vc = ADSSignVCProtocolAlert()
-            vc.alertIn(self, animateType: .up, completion: nil)
+            let vc = ADSUserAgreementViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        case .privacy_policy:
+            let vc = ADSPrivacyPolicyViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
         case .clear:
             KingfisherManager.shared.cache.clearCache()
             self.rightLab?.text = "0 MB"

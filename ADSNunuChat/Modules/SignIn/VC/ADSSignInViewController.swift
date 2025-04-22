@@ -11,6 +11,9 @@ import RxSwift
 
 class ADSSignInViewController: ADSBaseViewController {
 
+    /// 是否同意隐私政策
+    private var isAgree: Bool = false
+    
     lazy var navBar: ADSSignInNavBar = {
         let bar = ADSSignInNavBar(frame: .init(x: 0, y: 0, width: kScreenWidth, height: kNavHeight))
         bar.backgroundColor = .clear
@@ -102,6 +105,35 @@ class ADSSignInViewController: ADSBaseViewController {
         return field
     }()
     
+    /// 隐私、用户协议
+    private lazy var protocolBtn: ADSButton = {
+        let btn = ADSButton()
+        btn.titleLabel?.font = .systemFont(ofSize: 12)
+        btn.titleLabel?.numberOfLines = 0
+        btn.setTitleColor(.init(hex: "#8C8C8C"), for: .normal)
+        btn.spacingBetweenImageAndTitle = 5
+        btn.titleLabel?.rz.tapAction({ [weak self, weak btn] _, tapActionId, _ in
+            guard let btn = btn else { return }
+            guard let self = self else { return }
+            self.view.endEditing(true)
+            if tapActionId == "user" {
+                let web = ADSUserAgreementViewController()
+                self.navigationController?.pushViewController(web, animated: true)
+            } else if tapActionId == "privacy" {
+                let web = ADSPrivacyPolicyViewController()
+                self.navigationController?.pushViewController(web, animated: true)
+            } else if tapActionId == "agree"  {
+                self.isAgree.toggle()
+                btn.rz.colorfulConfer(confer: { confer in
+                    Self.updateProtocolBtnContent(confer, isAgree: self.isAgree)
+                }, for: .normal)
+            }
+        })
+        btn.rz.colorfulConfer(confer: { confer in
+            Self.updateProtocolBtnContent(confer, isAgree: self.isAgree)
+        }, for: .normal)
+        return btn
+    }()
     
     lazy var signInBtn: UIButton = {
         let btn: UIButton = .init()
@@ -187,12 +219,18 @@ extension ADSSignInViewController {
             make.height.equalTo(50)
         }
         
+        BGView.addSubview(protocolBtn)
+        protocolBtn.snp.makeConstraints { make in
+            make.top.equalTo(passwordField.snp.bottom).offset(20)
+            make.left.right.equalToSuperview().inset(20)
+        }
+        
         BGView.addSubview(signInBtn)
         signInBtn.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.width.equalTo(272)
             make.height.equalTo(56)
-            make.top.equalTo(passwordField.snp.bottom).offset(20)
+            make.top.equalTo(protocolBtn.snp.bottom).offset(20)
         }
         
         let emailValid = emailField.rx.text.orEmpty.map({$0.count > 0})
@@ -207,6 +245,11 @@ extension ADSSignInViewController {
     
     /// 登录
     func signInBtnAction() {
+        
+        guard isAgree else {
+            protocolBtn.shake()
+            return
+        }
         
         guard let account = emailField.text else {return}
         guard let psd = passwordField.text else {return}
@@ -237,6 +280,22 @@ extension ADSSignInViewController {
             
         }
         
+    }
+    
+    /// 刷新隐私政策按钮
+    public static func updateProtocolBtnContent(_ confer: ColorfulConferrerRZ, isAgree: Bool) {
+        var image: UIImage? = .image("login_protocol_normal")
+        if isAgree {
+            image = .image("login_protocol_select")
+        }
+        confer.paragraphStyle?.lineSpacing(2)
+        confer.image(image)?
+            .bounds(.init(x: 0, y: -6, width: 24, height: 24))
+            .tapActionByLable("agree")
+        confer.text("I have read and agree")
+        confer.text("《User Service Agreement》")?.textColor(.init(hex: "#FF2C2C")).tapActionByLable("user")
+        confer.text("And")
+        confer.text("《Privacy Policy》")?.textColor(.init(hex: "#FF2C2C")).tapActionByLable("privacy")
     }
     
 }

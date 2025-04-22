@@ -46,29 +46,6 @@ class ADSSignVC: ADSBaseViewController {
         return btn
     }()
     
-    lazy var agreelabel: UILabel = {
-        let lab: UILabel = .init()
-        lab.text = ""
-        lab.textColor = .white
-        lab.font = UIFont.systemFont(ofSize: 14)
-        lab.textAlignment = .center
-        lab.numberOfLines = 0
-        
-        lab.rz.colorfulConfer { confer in
-            confer.text("By continuing, you agree to our")?.textColor(.white.withAlphaComponent(0.6)).font(.systemFont(ofSize: 12))
-            confer.text("\n")
-            confer.text("Terms of Service \(ADSConst.AppDisplayName)")?.textColor(.white).font(.systemFont(ofSize: 12, weight: .bold)).tapActionByLable("agreelabel")
-        }
-        lab.rz.tapAction {[weak self] label, tapActionId, range in
-            guard let self = self else { return }
-            let vc = ADSSignVCProtocolAlert()
-            vc.alertIn(self, animateType: .up, completion: nil)
-            debugPrint("sdasdasd")
-        }
-        
-        return lab
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
@@ -107,10 +84,5 @@ extension ADSSignVC {
             make.size.equalTo(CGSize(width: 272.scale, height: 56.scale))
         }
         
-        view.addSubview(agreelabel)
-        agreelabel.snp.makeConstraints { make in
-            make.bottom.equalTo(-kSafeBottomMargin - 20)
-            make.centerX.equalToSuperview()
-        }
     }
 }

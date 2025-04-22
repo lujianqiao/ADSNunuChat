@@ -66,6 +66,10 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
     lazy var skipBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "skip"), for: .normal)
+        btn.rx.tap.subscribe(onNext: { _ in
+            let delegate = ADSConst.getSceneDelegate()
+            delegate?.window?.rootViewController = ADSTabBarViewController()
+        }).disposed(by: rx.disposeBag)
         return btn
     }()
     
