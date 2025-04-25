@@ -24,7 +24,7 @@ class ADSUserAgreementViewController: ADSBaseViewController, WKUIDelegate {
         webView = WKWebView(frame: .zero, configuration: config)
         webView?.uiDelegate = self
         webView?.navigationDelegate = self
-        if let url = URL(string: "https://app.trshf.link/#/usersAgreement") {
+        if let url = URL(string: "https://app.sbnhlsaa.link/#/usersAgreement") {
             let request = URLRequest(url: url)
             webView?.load(request)
             hud = ADSHUD.showHUD()

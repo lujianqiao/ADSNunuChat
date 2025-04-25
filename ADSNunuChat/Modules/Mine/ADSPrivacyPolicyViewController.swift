@@ -23,7 +23,7 @@ class ADSPrivacyPolicyViewController: ADSBaseViewController, WKUIDelegate {
         webView?.uiDelegate = self
         webView?.navigationDelegate = self
         
-        if let url = URL(string: "https://app.trshf.link/#/privacyAgreement") {
+        if let url = URL(string: "https://app.sbnhlsaa.link/#/privacyAgreement") {
             let request = URLRequest(url: url)
             webView?.load(request)
             hud = ADSHUD.showHUD()
