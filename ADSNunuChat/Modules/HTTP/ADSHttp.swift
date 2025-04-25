@@ -51,7 +51,7 @@ enum ADSHttp {
 
 extension ADSHttp: TargetType {
     var baseURL: URL {
-        return URL.init(string: "https://opi.sbnhlsaa.link")!
+        return URL.init(string: "http://serapi.dabweapro.xyz/api")!
     }
     
     var path: String {
