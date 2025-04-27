@@ -49,6 +49,7 @@ class ADSSignVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        getData()
         // Do any additional setup after loading the view.
     }
     
@@ -84,5 +85,10 @@ extension ADSSignVC {
             make.size.equalTo(CGSize(width: 272.scale, height: 56.scale))
         }
         
+    }
+    
+    func getData() {
+        httpProvider.request(.getUserInfo(nil)) { _ in
+        }
     }
 }

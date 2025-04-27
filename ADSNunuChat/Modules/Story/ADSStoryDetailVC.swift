@@ -380,6 +380,14 @@ extension ADSStoryDetailVC {
         } else {
             self.followBtn.setTitle("Follow", for: .normal)
         }
+        
+        var contentHeight = model.content.calculateTextHeight(.systemFont(ofSize: 14), width: kScreenWidth - 28) + 530 + Float(kSafeBottomMargin)
+        
+        if contentHeight < Float(kScreenHeight - kNavHeight - 4) {
+            contentHeight = Float(kScreenHeight - kNavHeight - 4)
+        }
+        
+        bgView.contentSize = .init(width: kScreenWidth, height: Double(contentHeight))
     }
     
     func changeImage(with index: Int) {
