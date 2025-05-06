@@ -323,6 +323,7 @@ extension ADSStoryDetailVC {
                     self.rechargeAlert.alertIn(self, animateType: .scale, completion: nil)
                 } else {
                     // 解锁
+                    self.buyAction()
                 }
             }
         }).disposed(by: spendDoldAlert.rx.disposeBag)
@@ -372,7 +373,16 @@ extension ADSStoryDetailVC {
         likeBtn.setTitle("\(model.praise_num) likes", for: .normal)
         contentLabel.text = model.content
         
-        maskView.isHidden = model.unlock_price <= 0
+        if model.unlock_price > 0 {
+            if let buyList = ADSConst.getUserDefaultsArrayData(with: ADSConst.userBuyList), buyList.contains(where: {$0 == self.model.id}) {
+                maskView.isHidden = true
+            } else {
+                maskView.isHidden = false
+            }
+        } else {
+            maskView.isHidden = true
+        }
+        
         unlockBtn.setTitle("\(model.unlock_price) coins to unlock", for: .normal)
         
         if self.model.is_followed {
@@ -468,6 +478,25 @@ extension ADSStoryDetailVC {
                 }
                 
                 ADSHUD.showSuccess()
+            case .failure(_):
+                ADSHUD.showText(text: "Data anomalies")
+            }
+        }
+        
+    }
+    
+    func buyAction() {
+        
+        let name: String = "\(model.id)"
+        let coins: String = "\(model.unlock_price)"
+        
+        let hud = ADSHUD.showHUD()
+        httpProvider.request(.buy(name, coins)) { result in
+            hud.hide(animated: true)
+            switch result {
+            case .success(_):
+                self.maskView.isHidden = true
+                ADSConst.setUserDefaultsArrayData(with: self.model.id, key: ADSConst.userBuyList)
             case .failure(_):
                 ADSHUD.showText(text: "Data anomalies")
             }

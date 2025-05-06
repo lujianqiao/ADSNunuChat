@@ -247,8 +247,14 @@ class ADSCollectionsCell: UITableViewCell {
         likeBtn.isSelected = data.is_praised
         
         if data.unlock_price > 0 {
-            unlockBtn.setImage(UIImage(named: "mine_unlock_icon"), for: .normal)
-            unlockBtn.setTitle("Unlock to view", for: .normal)
+            
+            if let buyList = ADSConst.getUserDefaultsArrayData(with: ADSConst.userBuyList), buyList.contains(where: {$0 == data.id}) {
+                unlockBtn.setImage(UIImage(named: "mine_coll_icon"), for: .normal)
+                unlockBtn.setTitle("View", for: .normal)
+            } else {
+                unlockBtn.setImage(UIImage(named: "mine_unlock_icon"), for: .normal)
+                unlockBtn.setTitle("Unlock to view", for: .normal)
+            }
         } else {
             unlockBtn.setImage(UIImage(named: "mine_coll_icon"), for: .normal)
             unlockBtn.setTitle("View", for: .normal)

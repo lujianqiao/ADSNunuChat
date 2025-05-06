@@ -70,6 +70,8 @@ struct ADSConst {
     
     static let userPassword = "userPassword"
     
+    static let userBuyList = "userBuyList"
+    
     /// APP名称
     static var AppDisplayName: String {
         let infoDictionary: Dictionary? = Bundle.main.infoDictionary
@@ -118,6 +120,27 @@ struct ADSConst {
     /// 保存信息
     static func setUserDefaultsData(with data: String?, key: String) {
         UserDefaults.standard.set(data, forKey: key)
+        UserDefaults.standard.synchronize()
+    }
+    
+    /// 获取信息
+    static func getUserDefaultsArrayData(with key: String) -> [String]? {
+        let auth = UserDefaults.standard.value(forKey: key) as? [String]
+        return auth
+    }
+    
+    
+    /// 保存信息
+    static func setUserDefaultsArrayData(with data: String?, key: String) {
+        
+        guard let value = data else {return}
+        var datas: [String] = []
+        if let values = ADSConst.getUserDefaultsArrayData(with: ADSConst.userBuyList) {
+            datas = values
+        }
+        datas.append(value)
+        
+        UserDefaults.standard.set(datas, forKey: key)
         UserDefaults.standard.synchronize()
     }
     

@@ -45,7 +45,8 @@ enum ADSHttp {
     case reportAction(_ userID: String)
     ///  充值验证
     case verifyPurchaseProof(_ purchaseId: String, _ receiptData: String, _ transactionId: String, _ env: String = "2")
-    
+    /// 消费
+    case buy(_ name: String, _ coins: String)
     case getRechargeList
 }
 
@@ -96,6 +97,8 @@ extension ADSHttp: TargetType {
             return "/reportSome"
         case .verifyPurchaseProof:
             return "/sub"
+        case .buy:
+            return "/spend"
         }
     }
     
@@ -120,7 +123,8 @@ extension ADSHttp: TargetType {
                 .blockAction,
                 .blockList,
                 .reportAction,
-                .verifyPurchaseProof:
+                .verifyPurchaseProof,
+                .buy:
             return .post
         }
     }
@@ -313,6 +317,14 @@ extension ADSHttp: TargetType {
             params["receiptData"] = receiptData
             params["transactionId"] = transactionId
             params["env"] = env
+            let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
+            return .requestCompositeData(bodyData: data, urlParameters:[:])
+            
+        case .buy(let name, let coins):
+            
+            var params: [String: Any] = [:]
+            params["name"] = name
+            params["coins"] = coins
             let data = try! JSONSerialization.data(withJSONObject:params, options: JSONSerialization.WritingOptions.prettyPrinted)
             return .requestCompositeData(bodyData: data, urlParameters:[:])
             
