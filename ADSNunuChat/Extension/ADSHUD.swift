@@ -6,34 +6,32 @@
 //
 
 import Foundation
-import MBProgressHUD
+import ProgressHUD
 
 struct ADSHUD {
     
     static func showText(text: String, showView: UIView = kWindow ?? UIWindow()) {
-        let hud = MBProgressHUD.showAdded(to: showView, animated: true)
-        hud.mode = .text
-        hud.label.text = text
-        hud.offset = CGPoint(x: 0.0, y: 1000000.0)
-        hud.hide(animated: true, afterDelay: 2)
+        
+        ProgressHUD.animate(text, .none)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            ProgressHUD.remove()
+        }
+        
     }
     
-    static func showHUD(showView: UIView = kWindow ?? UIWindow()) -> MBProgressHUD {
-        let window = kWindow ?? UIWindow()
-        let hud = MBProgressHUD.showAdded(to: window, animated: true)
-        return hud
+    static func showHUD(showView: UIView = kWindow ?? UIWindow()) {
+        ProgressHUD.animate(nil, .activityIndicator)
+    }
+    
+    static func hidenHUD() {
+        ProgressHUD.remove()
     }
     
     static func showSuccess(text: String = "", showView: UIView = kWindow ?? UIWindow()) {
-        let hud = MBProgressHUD.showAdded(to: showView, animated: true)
-        hud.mode = .customView
-        hud.label.text = text
-        
-        let image = UIImageView(image: UIImage(named: "Checkmark"))
-        hud.customView = image
-        hud.isSquare = true
-        
-        hud.hide(animated: true, afterDelay: 1)
+        ProgressHUD.succeed(text)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            ProgressHUD.remove()
+        }
     }
     
 }

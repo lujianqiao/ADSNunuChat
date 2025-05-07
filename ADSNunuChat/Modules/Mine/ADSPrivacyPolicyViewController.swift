@@ -8,12 +8,10 @@
 
 import UIKit
 import WebKit
-import MBProgressHUD
 
 class ADSPrivacyPolicyViewController: ADSBaseViewController, WKUIDelegate {
 
     var webView: WKWebView?
-    var hud: MBProgressHUD?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +24,7 @@ class ADSPrivacyPolicyViewController: ADSBaseViewController, WKUIDelegate {
         if let url = URL(string: "https://app.sbnhlsaa.link/#/privacyAgreement") {
             let request = URLRequest(url: url)
             webView?.load(request)
-            hud = ADSHUD.showHUD()
+            ADSHUD.showHUD()
         }
         if let web = webView {
             view.addSubview(web)
@@ -47,6 +45,6 @@ extension ADSPrivacyPolicyViewController: WKNavigationDelegate, WKScriptMessageH
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        hud?.hide(animated: true)
+        ADSHUD.hidenHUD()
     }
 }

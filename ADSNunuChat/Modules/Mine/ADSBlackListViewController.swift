@@ -65,9 +65,9 @@ extension ADSBlackListViewController {
     }
     
     func getData() {
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.blockList("1", "100")) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             
             switch result {
             case .success(let response):

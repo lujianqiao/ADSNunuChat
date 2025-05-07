@@ -81,10 +81,10 @@ extension ADSWalletViewController {
             topView.beansLab.text = "\(userInfoModel.coins)"
         }
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.getRechargeList) { result in
             
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
@@ -122,9 +122,9 @@ extension ADSWalletViewController {
     
     func rechargeAction(with model: ADSRechargeModel) {
         // TODO: -充值
-        let hud = ADSHUD.showHUD(showView: self.view)
+        ADSHUD.showHUD(showView: self.view)
         ADSIAPNewManager.shared.payAction(productId: model.purchase_id) { productId, receipt, transaction in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             
             // 拿到购买凭证
             guard let transactionIdentifier = transaction.transactionIdentifier else {return}
@@ -144,9 +144,10 @@ extension ADSWalletViewController {
                 }
             }
         } failed: { error in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
+            ADSHUD.showText(text: error.localizedDescription)
         } canceled: {
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
         }
     }
 }

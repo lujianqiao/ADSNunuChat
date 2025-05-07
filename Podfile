@@ -11,18 +11,18 @@ target 'ADSNunuChat' do
   pod 'Alamofire'
   pod 'Moya'
   pod 'SnapKit'
-  pod 'MBProgressHUD', '~> 1.2.0'
+  pod 'ProgressHUD'
   pod 'TZImagePickerController'
   pod 'JXBanner'
   # 自动管理键盘
-  pod 'IQKeyboardManagerSwift', '6.2.1'
+  pod 'IQKeyboardManagerSwift', '8.0.1'
   pod 'SmartCodable'
   # 富文本
   pod 'RZColorfulSwift', '~>0.3.0'
 
   # Rx全家桶
-  pod 'RxSwift', '6.6.0'
-  pod 'RxCocoa', '6.6.0'
+  pod 'RxSwift', '6.9.0'
+  pod 'RxCocoa', '6.9.0'
   pod 'RxDataSources', '5.0.0'
   pod 'RxGesture', '4.0.4'
   pod 'NSObject+Rx', '5.2.2'

@@ -153,10 +153,10 @@ extension ADSEditUserInfoViewController {
             guard let imageData = UIImage.compressData(image: image, maxLength: 1024 * 1024) else {return}
             
             
-            let hud = ADSHUD.showHUD()
+            ADSHUD.showHUD()
             httpProvider.request(.uploadFile(imageName, imageData)) { result in
                 
-                hud.hide(animated: true)
+                ADSHUD.hidenHUD()
                 switch result {
                 case .success(let response):
                     
@@ -179,9 +179,9 @@ extension ADSEditUserInfoViewController {
     /// 更新用户信息
     func updateUserInfo(with avatar: String?) {
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.updateUserInfo(nameTextField.text, avatar, nil, nil)) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(_):
                 

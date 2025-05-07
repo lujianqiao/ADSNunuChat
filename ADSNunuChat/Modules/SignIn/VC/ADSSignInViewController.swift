@@ -253,11 +253,11 @@ extension ADSSignInViewController {
         
         guard let account = emailField.text else {return}
         guard let psd = passwordField.text else {return}
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         
         httpProvider.request(.signin(account, psd)) { result in
             
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}

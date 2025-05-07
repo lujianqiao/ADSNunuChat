@@ -7,7 +7,6 @@
 
 import UIKit
 import RxSwift
-import MBProgressHUD
 
 class ADSHomeViewController: ADSBaseViewController {
 
@@ -112,13 +111,12 @@ extension ADSHomeViewController {
     
     func getData() {
         
-        var hud: MBProgressHUD?
         if datas.count == 0 {
-            hud = ADSHUD.showHUD()
+            ADSHUD.showHUD()
         }
         
         httpProvider.request(.getMakeUpList("0", "1", "100", "0", nil)) { result in
-            hud?.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}

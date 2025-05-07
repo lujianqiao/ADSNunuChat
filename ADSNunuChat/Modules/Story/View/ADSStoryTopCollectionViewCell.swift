@@ -207,9 +207,9 @@ class ADSStoryTopCollectionViewItemCell: UICollectionViewCell {
         var status: Int = 1
         status = data.is_followed ? 0 : 1
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.followAction("\(data.user_id)", status)) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(_):
                 self.data.is_followed = !self.data.is_followed

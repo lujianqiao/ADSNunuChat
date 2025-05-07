@@ -464,9 +464,9 @@ extension ADSStoryDetailVC {
         var status: Int = 1
         status = model.is_followed ? 0 : 1
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.followAction("\(model.user_id)", status)) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(_):
                 self.model.is_followed = !self.model.is_followed
@@ -490,9 +490,9 @@ extension ADSStoryDetailVC {
         let name: String = "\(model.id)"
         let coins: String = "\(model.unlock_price)"
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.buy(name, coins)) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             switch result {
             case .success(_):
                 self.maskView.isHidden = true

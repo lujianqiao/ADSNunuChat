@@ -61,9 +61,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     /// 三方库相关初始化配置
     func initThreeLibrary() {
         // 配置 IQKeyboardManager
-        IQKeyboardManager.shared.enable = true
+//        IQKeyboardManager.shared.enable = true
         // 点击空白处收起键盘
-        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+        IQKeyboardManager.shared.resignOnTouchOutside = true
 //        // 设置按钮文字
 //        IQKeyboardManager.shared.toolbarDoneBarButtonItemText = SLocalized.mine_edit_complete.tr
 //        // 设置按钮字体颜色

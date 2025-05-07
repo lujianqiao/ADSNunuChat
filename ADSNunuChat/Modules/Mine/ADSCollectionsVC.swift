@@ -65,9 +65,9 @@ extension ADSCollectionsVC {
     }
     
     func getData() {
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         httpProvider.request(.likeList("1", "100", "1")) { result in
-            hud.hide(animated: true)
+            ADSHUD.hidenHUD()
             
             switch result {
             case .success(let response):

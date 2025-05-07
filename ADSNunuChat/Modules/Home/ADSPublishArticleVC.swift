@@ -327,7 +327,7 @@ extension ADSPublishArticleVC {
     
     func postHomeDetailAction() {
         
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         let tasks = images.map { image in
             return uploadImageAction(with: image)
         }
@@ -351,7 +351,7 @@ extension ADSPublishArticleVC {
             }
             
             httpProvider.request(.postMakeUp(titleValue, contentValue, img, "0", "\(coins)")) { result in
-                hud.hide(animated: true)
+                ADSHUD.hidenHUD()
                 switch result {
                 case .success(_):
                     self.navigationController?.popViewController(animated: true)
@@ -365,7 +365,7 @@ extension ADSPublishArticleVC {
     }
     
     func postStoryDetailAction() {
-        let hud = ADSHUD.showHUD()
+        ADSHUD.showHUD()
         let tasks = images.map { image in
             return uploadImageAction(with: image)
         }
@@ -389,7 +389,7 @@ extension ADSPublishArticleVC {
             }
             
             httpProvider.request(.postDress(titleValue, contentValue, img)) { result in
-                hud.hide(animated: true)
+                ADSHUD.hidenHUD()
                 switch result {
                 case .success(_):
                     self.navigationController?.popViewController(animated: true)
