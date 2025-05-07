@@ -444,6 +444,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Koody;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The APP needs your consent to use the camera to take, upload and publish photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -486,6 +487,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ADSNunuChat/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Koody;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The APP needs your consent to use the camera to take, upload and publish photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Your consent is required to access the album so that you can get pictures from the album and upload your avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
