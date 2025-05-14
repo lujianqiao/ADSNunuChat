@@ -154,7 +154,11 @@ class ADSVideoViewController: ADSBaseViewController {
             }
             
             if self.timingNum >= 60 {
-                self.dismiss(animated: true)
+                
+                ADSHUD.showText(text: "No one is answering the call")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.dismiss(animated: true)
+                }
             }
         })
         
