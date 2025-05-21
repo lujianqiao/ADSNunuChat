@@ -49,8 +49,12 @@ class ADSSignVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
-        getData()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        getData()
     }
     
     override var preferredNavigationBarHidden: Bool {true}
