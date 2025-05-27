@@ -94,7 +94,7 @@ extension ADSWalletViewController {
                 self.collectionView.reloadData()
                 
             case .failure(_):
-                ADSHUD.showText(text: "Data anomalies")
+                debugPrint("")
             }
             
         }
@@ -113,7 +113,7 @@ extension ADSWalletViewController {
                 self.topView.beansLab.text = "\(model.coins)"
                 
             case .failure(_):
-                ADSHUD.showText(text: "Data anomalies")
+                debugPrint("")
             }
             
         }
@@ -132,20 +132,19 @@ extension ADSWalletViewController {
                
                 switch result {
                 case .success(let response):
-                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
-                    guard let code = json["code"] as? Int else {return}
-                    if code == 1 {
+//                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
+//                    guard let code = json["code"] as? Int else {return}
+//                    if code == 1 {
                         // 验证通过
                         ADSHUD.showText(text: "Purchase Success", showView: self.view)
                         self.getUserInfo()
-                    }
+//                    }
                 case .failure(_):
-                    ADSHUD.showText(text: "Data anomalies")
+                    debugPrint("")
                 }
             }
         } failed: { error in
             ADSHUD.hidenHUD()
-            ADSHUD.showText(text: error.localizedDescription)
         } canceled: {
             ADSHUD.hidenHUD()
         }
