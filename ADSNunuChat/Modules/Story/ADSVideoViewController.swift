@@ -70,7 +70,7 @@ class ADSVideoViewController: ADSBaseViewController {
     lazy var flipBtn: UIButton = {
         let btn: UIButton = .init()
         btn.setImage(UIImage(named: "story_flip"), for: .normal)
-        btn.isHidden = true
+//        btn.isHidden = true
         return btn
     }()
     
@@ -137,7 +137,7 @@ class ADSVideoViewController: ADSBaseViewController {
         view.addSubview(flipBtn)
         flipBtn.snp.makeConstraints { make in
             make.centerY.equalTo(hangUpBtn)
-            make.right.equalTo(timeLabel.snp.left).offset(-16)
+            make.left.equalTo(hangUpBtn.snp.right).offset(26)
             make.width.height.equalTo(45)
         }
         
