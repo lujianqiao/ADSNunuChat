@@ -45,7 +45,15 @@ class ADSStoryTopCollectionViewCell: UICollectionViewCell {
     }
     
     func reloadData(with data: [ADSHomeListModel]) {
-        self.datas = data
+        
+        // 去重
+        let uniqueData = data.reduce(into: [ADSHomeListModel]()) { result, person in
+            if !result.contains(where: { $0.user_id == person.user_id }) {
+                result.append(person)
+            }
+        }
+        
+        self.datas = uniqueData
         collection.reloadData()
     }
     

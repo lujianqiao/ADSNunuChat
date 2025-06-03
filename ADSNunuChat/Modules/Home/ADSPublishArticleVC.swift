@@ -322,6 +322,7 @@ extension ADSPublishArticleVC {
         guard num > 0 else {return}
         guard let picker = TZImagePickerController.init(maxImagesCount: num, delegate: self) else {return}
         picker.preferredLanguage = "en"
+        picker.allowTakeVideo = false
         present(picker, animated: true)
     }
     

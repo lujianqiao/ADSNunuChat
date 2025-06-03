@@ -82,6 +82,7 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
             guard let self = self else { return }
             guard let picker = TZImagePickerController.init(maxImagesCount: 1, delegate: self) else {return}
             picker.preferredLanguage = "en"
+            picker.allowTakeVideo = false
             present(picker, animated: true)
         }).disposed(by: rx.disposeBag)
         return btn
