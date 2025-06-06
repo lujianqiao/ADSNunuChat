@@ -170,10 +170,13 @@ extension ADSAccountViewController {
         }
         
         
+        ADSHUD.showHUD()
         httpProvider.request(.signOff) { result in
+            ADSHUD.hidenHUD()
             switch result {
             case .success(let response):
                 
+                ADSConst.setUserDefaultsData(with: nil, key: ADSConst.userTokenKey)
                 let delegate = ADSConst.getSceneDelegate()
                 delegate?.window?.rootViewController = ADSNavigationController(rootViewController: ADSSignVC())
                 
