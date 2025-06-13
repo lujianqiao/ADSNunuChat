@@ -98,7 +98,7 @@ class ADSInputUserInfoViewController: ADSBaseViewController {
     
     lazy var nameField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Enter your Nickname"
+        field.attributedPlaceholder = NSAttributedString(string: "Enter your Nickname", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
         field.addCorner(radius: 15)

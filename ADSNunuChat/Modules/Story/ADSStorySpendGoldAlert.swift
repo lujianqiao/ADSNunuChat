@@ -102,7 +102,8 @@ class ADSStorySpendGoldAlert: ADSBaseViewController {
         
         bgImage.addSubview(contentLabel)
         contentLabel.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(21)
+            make.left.equalTo(21)
+            make.width.equalTo(295 - 42)
             make.top.equalTo(84)
         }
         

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,44 +21,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="157" height="214"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mine_beans" translatesAutoresizingMaskIntoConstraints="NO" id="Fy7-uN-n3I">
-                                <rect key="frame" x="59.666666666666657" y="21" width="38" height="38"/>
+                                <rect key="frame" x="59.666666666666657" y="19" width="38" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="38" id="GuS-on-fNJ"/>
                                     <constraint firstAttribute="height" constant="38" id="fFl-X5-8rP"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1jW-fF-9qJ">
-                                <rect key="frame" x="0.0" y="174" width="157" height="40"/>
+                                <rect key="frame" x="0.0" y="178" width="157" height="36"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="FWx-hC-DUr"/>
+                                    <constraint firstAttribute="height" constant="36" id="FWx-hC-DUr"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="$ 1.99"/>
+                                <state key="normal" title="$ 1.99">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E9I-2f-i4l">
-                                <rect key="frame" x="72" y="61" width="13.333333333333329" height="24"/>
+                                <rect key="frame" x="72" y="57" width="13.333333333333329" height="24"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click to recharge" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z7p-dv-CC4">
-                                <rect key="frame" x="40" y="85" width="77" height="11"/>
+                                <rect key="frame" x="40" y="81" width="77" height="11"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="9"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="z7p-dv-CC4" firstAttribute="centerX" secondItem="pif-q1-E3F" secondAttribute="centerX" id="0GE-Cc-2eZ"/>
                             <constraint firstItem="Fy7-uN-n3I" firstAttribute="centerX" secondItem="pif-q1-E3F" secondAttribute="centerX" id="IbX-MG-Ims"/>
-                            <constraint firstItem="Fy7-uN-n3I" firstAttribute="top" secondItem="pif-q1-E3F" secondAttribute="top" constant="21" id="NNF-Wm-cyv"/>
+                            <constraint firstItem="Fy7-uN-n3I" firstAttribute="top" secondItem="pif-q1-E3F" secondAttribute="top" constant="19" id="NNF-Wm-cyv"/>
                             <constraint firstAttribute="bottom" secondItem="1jW-fF-9qJ" secondAttribute="bottom" id="OCu-Nf-ZeY"/>
                             <constraint firstItem="1jW-fF-9qJ" firstAttribute="leading" secondItem="pif-q1-E3F" secondAttribute="leading" id="QPh-1d-yaj"/>
                             <constraint firstAttribute="trailing" secondItem="1jW-fF-9qJ" secondAttribute="trailing" id="ba4-8i-wsr"/>
-                            <constraint firstItem="E9I-2f-i4l" firstAttribute="top" secondItem="Fy7-uN-n3I" secondAttribute="bottom" constant="2" id="cwj-No-knl"/>
+                            <constraint firstItem="E9I-2f-i4l" firstAttribute="top" secondItem="Fy7-uN-n3I" secondAttribute="bottom" id="cwj-No-knl"/>
                             <constraint firstItem="z7p-dv-CC4" firstAttribute="top" secondItem="E9I-2f-i4l" secondAttribute="bottom" id="iJ0-j8-5al"/>
                             <constraint firstItem="E9I-2f-i4l" firstAttribute="centerX" secondItem="Fy7-uN-n3I" secondAttribute="centerX" id="l4c-kj-dvL"/>
                         </constraints>
@@ -84,8 +85,5 @@
     </objects>
     <resources>
         <image name="mine_beans" width="38" height="38"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>

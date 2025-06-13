@@ -69,7 +69,7 @@ class ADSSignUpViewController: ADSBaseViewController {
     
     lazy var emailField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Enter your email"
+        field.attributedPlaceholder = NSAttributedString(string: "Enter your email", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
         field.addCorner(radius: 15)
@@ -94,7 +94,7 @@ class ADSSignUpViewController: ADSBaseViewController {
     
     lazy var passwordField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Enter the password"
+        field.attributedPlaceholder = NSAttributedString(string: "Enter the password", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
         field.addCorner(radius: 15)
@@ -264,7 +264,10 @@ extension ADSSignUpViewController {
             switch result {
             case .success(let response):
                 guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {return}
-                guard let data = json["data"] as? [String: Any] else {return}
+                guard let data = json["data"] as? [String: Any] else {
+                    ADSHUD.showText(text: "Account already exists")
+                    return
+                }
                 guard let access_token = data["access_token"] as? String else {return}
                 guard let token_type = data["token_type"] as? String else {return}
                 ADSConst.setUserDefaultsData(with: "\(token_type) \(access_token)", key: ADSConst.userTokenKey)

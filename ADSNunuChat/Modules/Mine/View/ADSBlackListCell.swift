@@ -19,6 +19,7 @@ class ADSBlackListCell: UITableViewCell {
         view.addCorner(radius: 10)
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.backgroundColor = .white
         return view
     }()
     
@@ -66,6 +67,7 @@ class ADSBlackListCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
+        backgroundColor = .white
         contentView.addSubview(bgView)
         bgView.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(15)

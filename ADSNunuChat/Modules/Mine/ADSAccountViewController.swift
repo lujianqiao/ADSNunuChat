@@ -70,7 +70,7 @@ class ADSAccountViewController: ADSBaseViewController {
     
     lazy var passwordField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Enter the password"
+        field.attributedPlaceholder = NSAttributedString(string: "Enter the password", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         field.textColor = .init(hex: "#0C092A")
         field.font = UIFont.systemFont(ofSize: 14)
         field.addCorner(radius: 15)

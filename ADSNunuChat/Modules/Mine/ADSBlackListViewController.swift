@@ -30,6 +30,7 @@ class ADSBlackListViewController: ADSBaseViewController {
         tab.delegate = self
         tab.dataSource = self
         tab.separatorStyle = .none
+        tab.backgroundColor = .white
         tab.register(ADSBlackListCell.self, forCellReuseIdentifier: String(describing: ADSBlackListCell.self))
         return tab
     }()

@@ -128,7 +128,7 @@ class ADSPublishArticleVC: ADSBaseViewController {
     
     lazy var titleTextField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "Enter a title"
+        field.attributedPlaceholder = NSAttributedString(string: "Enter a title", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .bold)])
         field.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         field.textColor = .black
         field.layer.borderColor = UIColor.black.cgColor
@@ -156,6 +156,7 @@ class ADSPublishArticleVC: ADSBaseViewController {
         text.font = .systemFont(ofSize: 14)
         text.layer.borderColor = UIColor.black.cgColor
         text.layer.borderWidth = 1
+        text.backgroundColor = .white
         text.addCorner(radius: 15)
         return text
     }()

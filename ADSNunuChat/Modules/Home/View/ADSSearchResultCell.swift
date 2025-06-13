@@ -56,6 +56,7 @@ class ADSSearchResultCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = .none
         backgroundColor = .clear
         contentView.addSubview(bgView)
         bgView.snp.makeConstraints { make in
@@ -79,7 +80,7 @@ class ADSSearchResultCell: UITableViewCell {
         bgView.addSubview(IDImage)
         IDImage.snp.makeConstraints { make in
             make.left.equalTo(avatarImage.snp.right).offset(15)
-            make.top.equalTo(nameLabel.snp.bottom).offset(8)
+            make.bottom.equalTo(-4)
             make.width.height.equalTo(16)
         }
         

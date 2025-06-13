@@ -30,6 +30,7 @@ class ADSCollectionsVC: ADSBaseViewController {
         tab.delegate = self
         tab.dataSource = self
         tab.separatorStyle = .none
+        tab.backgroundColor = .white
         tab.register(ADSCollectionsCell.self, forCellReuseIdentifier: String(describing: ADSCollectionsCell.self))
         return tab
     }()

@@ -27,6 +27,7 @@ class ADSMineToolView: UIView {
         tab.dataSource = self
         tab.separatorStyle = .none
         tab.isScrollEnabled = false
+        tab.backgroundColor = .white
         tab.register(ADSMineToolCell.self, forCellReuseIdentifier: String(describing: ADSMineToolCell.self))
         return tab
     }()
@@ -92,6 +93,7 @@ class ADSMineToolCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
+        contentView.backgroundColor = .white
         contentView.addSubview(leftImage)
         leftImage.snp.makeConstraints { make in
             make.centerY.equalToSuperview()

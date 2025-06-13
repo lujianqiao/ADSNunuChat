@@ -16,8 +16,10 @@ class ADSPrivacyPolicyViewController: ADSBaseViewController, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .white
         let config = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: config)
+        webView?.backgroundColor = .white
         webView?.uiDelegate = self
         webView?.navigationDelegate = self
         

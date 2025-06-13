@@ -18,10 +18,12 @@ class ADSUserAgreementViewController: ADSBaseViewController, WKUIDelegate {
         super.viewDidLoad()
 
         
+        view.backgroundColor = .white
         let config = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: config)
         webView?.uiDelegate = self
         webView?.navigationDelegate = self
+        webView?.backgroundColor = .white
         if let url = URL(string: "https://app.sbnhlsaa.link/#/usersAgreement") {
             let request = URLRequest(url: url)
             webView?.load(request)

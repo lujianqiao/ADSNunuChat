@@ -17,9 +17,9 @@ class ADSHomeSearchView: UIView {
     
     lazy var enterField: UITextField = {
         let field: UITextField = .init()
-        field.placeholder = "search"
+        field.attributedPlaceholder = NSAttributedString(string: "search", attributes: [.foregroundColor: UIColor.init(hex: "#969696"), .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         field.font = UIFont.systemFont(ofSize: 14)
-        
+        field.textColor = .black
         
         let leftView = UIView(frame: .init(x: 0, y: 0, width: 40, height: 16))
         

@@ -29,7 +29,7 @@ class ADSMonentsVC: ADSBaseViewController {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .vertical
         let collectionView: UICollectionView = .init(frame: .zero, collectionViewLayout: flowLayout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsHorizontalScrollIndicator = false

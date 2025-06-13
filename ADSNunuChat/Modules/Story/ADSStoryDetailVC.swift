@@ -292,10 +292,10 @@ extension ADSStoryDetailVC {
             make.top.equalTo(likeBtn.snp.bottom).offset(15)
         }
         
-        bgView.addSubview(callBtn)
+        view.addSubview(callBtn)
         callBtn.snp.makeConstraints { make in
-            make.centerX.equalTo(contentLabel)
-            make.top.equalTo(contentLabel.snp.top).offset(106)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(-kSafeBottomMargin - 60)
             make.width.height.equalTo(55)
         }
         
@@ -310,7 +310,7 @@ extension ADSStoryDetailVC {
         unlockBtn.snp.makeConstraints { make in
             make.size.equalTo(CGSize(width: 240, height: 55))
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(-95)
+            make.bottom.equalTo(-kSafeBottomMargin - 60)
         }
     }
     
