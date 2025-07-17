@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreTelephony
 
 public let kScreenWidth: Double = UIScreen.main.bounds.size.width
 public let kScreenHeight: Double = UIScreen.main.bounds.size.height
@@ -62,6 +63,8 @@ struct ADSConst {
     
     static let userTokenKey = "userTokenKey"
     
+    static let userBTokenKey = "userBTokenKey"
+    
     static let userAccountKey = "userAccountKey"
     
     static let userAvatarKey = "userAvatar"
@@ -69,6 +72,8 @@ struct ADSConst {
     static let userChatDataKey = "userChatDataKey"
     
     static let userPassword = "userPassword"
+    
+    static let userBPassword = "userBPassword"
     
     static let userBuyList = "userBuyList"
     
@@ -156,5 +161,88 @@ struct ADSConst {
     static func setUserDefaultsValue(with data: Data?, key: String) {
         UserDefaults.standard.set(data, forKey: key)
         UserDefaults.standard.synchronize()
+    }
+    
+    /// 是否使用SIM卡
+    static func isSIMInserted() -> Bool {
+        let networkInfo = CTTelephonyNetworkInfo()
+        guard let carriers = networkInfo.serviceSubscriberCellularProviders else {
+            return false
+        }
+        
+        // 检查所有运营商是否为空（无SIM卡）
+        return !carriers.values.allSatisfy { $0.mobileCountryCode == nil }
+    }
+    
+    /// 是否使用VPN
+    static func isVPNConnected() -> Bool {
+        guard let settings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any],
+              let scoped = settings["__SCOPED__"] as? [String: Any] else {
+            return false
+        }
+        
+        for (key, _) in scoped {
+            if key.contains("tap") || key.contains("tun") || key.contains("ppp") || key.contains("ipsec") {
+                return true
+            }
+        }
+        return false
+    }
+    
+    /// 是否是中国运营商
+    static func isChineseCarrier() -> Bool {
+        let networkInfo = CTTelephonyNetworkInfo()
+        
+        if #available(iOS 12.0, *) {
+            guard let carriers = networkInfo.serviceSubscriberCellularProviders, !carriers.isEmpty else {
+                return false
+            }
+            
+            // 检查所有SIM卡运营商
+            for carrier in carriers.values {
+                if isChinaCarrier(carrier: carrier) {
+                    return true
+                }
+            }
+            return false
+        } else {
+            // iOS 12 以下版本
+            guard let carrier = networkInfo.subscriberCellularProvider else {
+                return false
+            }
+            return isChinaCarrier(carrier: carrier)
+        }
+    }
+
+    static private func isChinaCarrier(carrier: CTCarrier) -> Bool {
+        guard let countryCode = carrier.isoCountryCode?.uppercased() else {
+            return false
+        }
+        
+        // 首先检查国家代码是否为CN
+        if countryCode != "CN" {
+            return false
+        }
+        
+        // 检查中国运营商MCC和MNC
+        guard let mcc = carrier.mobileCountryCode, let mnc = carrier.mobileNetworkCode else {
+            return false
+        }
+        
+        // 中国移动
+        let chinaMobileMNCs = ["00", "02", "04", "07", "08"]
+        // 中国联通
+        let chinaUnicomMNCs = ["01", "06", "09"]
+        // 中国电信
+        let chinaTelecomMNCs = ["03", "05", "11"]
+        
+        // 中国MCC代码为460
+        if mcc == "460" {
+            if chinaMobileMNCs.contains(mnc) || chinaUnicomMNCs.contains(mnc) || chinaTelecomMNCs.contains(mnc) {
+                return true
+            }
+        }
+        
+        return false
     }
 }

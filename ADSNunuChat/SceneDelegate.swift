@@ -8,6 +8,10 @@
 import UIKit
 import IQKeyboardManagerSwift
 
+let AESkey = "9986sdff5s4f1123"
+let AESIV = "9986sdff5s4y456a"
+let AppId = "11111111"
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -20,13 +24,66 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         initThreeLibrary()
         
-        if let auth = ADSConst.getUserDefaultsData(with: ADSConst.userTokenKey) {
+        // 判断当前语言是否是中文
+        if let language = Locale.preferredLanguages.first, language.hasPrefix("zh-") {
+            goApakage()
+        } else if ADSConst.isChineseCarrier() {
+            // 使用中国网络运营商
+            goApakage()
+        } else {
+            window?.rootViewController = ADSLaunchScreenViewController()
+           
+            let parma: [String: Any] = ["fwercard": ADSConst.isSIMInserted() ? 1: 0,
+                                        "regervpn": ADSConst.isVPNConnected() ? 1: 0,
+                                        "ergergdebug": 0,
+                                        "langerguage": [Locale.preferredLanguages.first ?? "en-CN"],
+                                        "zogernet": TimeZone.current.identifier]
+            
+            httpBProvider.request(.getOpenStatus(parma)) { result in
+                
+                switch result {
+                case .success(let response):
+                    guard let json = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any] else {
+                        self.goApakage()
+                        return}
+                    guard let resultModel = ADSBOpenModel.deserialize(from: json) else {
+                        self.goApakage()
+                        return}
+                    guard resultModel.code == "0000" else {
+                        self.goApakage()
+                        return}
+                    guard let aes = AESCBC(key: AESkey, iv: AESIV) else  {
+                        self.goApakage()
+                        return}
+                    // 解密
+                    guard let decry = aes.decrypt(hexString: resultModel.result) else {
+                        self.goApakage()
+                        return}
+                    guard let resultJson = try? JSONSerialization.jsonObject(with: decry, options: []) as? [String: Any] else {
+                        self.goApakage()
+                        return}
+                    guard let resultModel = LaunchResultModel.deserialize(from: resultJson) else {
+                        self.goApakage()
+                        return}
+                    
+                    let web = ADSBWebViewController.init(model: resultModel)
+                    self.window?.rootViewController = web
+                    debugPrint(resultJson)
+                case .failure(_):
+                    debugPrint("启动接口异常")
+                }
+            }
+        }
+    }
+    
+    /// 去A包
+    func goApakage() {
+        if let _ = ADSConst.getUserDefaultsData(with: ADSConst.userTokenKey) {
             window?.rootViewController = ADSTabBarViewController()
         } else {
             let signInVC = ADSNavigationController(rootViewController: ADSSignVC())
-            window?.rootViewController = signInVC            
+            window?.rootViewController = signInVC
         }
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
