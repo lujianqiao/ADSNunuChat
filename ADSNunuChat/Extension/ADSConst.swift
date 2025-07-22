@@ -191,58 +191,21 @@ struct ADSConst {
     
     /// 是否是中国运营商
     static func isChineseCarrier() -> Bool {
+        // 获取运营商信息
         let networkInfo = CTTelephonyNetworkInfo()
         
-        if #available(iOS 12.0, *) {
-            guard let carriers = networkInfo.serviceSubscriberCellularProviders, !carriers.isEmpty else {
-                return false
+        // 获取当前的 SIM 信息（多 SIM 卡支持）
+        let carriers = networkInfo.serviceSubscriberCellularProviders
+        let mccCode = "460" // 中国的 MCC 值
+        
+        // 遍历所有 SIM 卡
+        for (_, carrier) in carriers ?? [:] {
+            if let mobileCountryCode = carrier.mobileCountryCode, mobileCountryCode == mccCode {
+                return true // 是中国的运营商
             }
-            
-            // 检查所有SIM卡运营商
-            for carrier in carriers.values {
-                if isChinaCarrier(carrier: carrier) {
-                    return true
-                }
-            }
-            return false
-        } else {
-            // iOS 12 以下版本
-            guard let carrier = networkInfo.subscriberCellularProvider else {
-                return false
-            }
-            return isChinaCarrier(carrier: carrier)
         }
+        
+        return false // 不是中国的运营商
     }
 
-    static private func isChinaCarrier(carrier: CTCarrier) -> Bool {
-        guard let countryCode = carrier.isoCountryCode?.uppercased() else {
-            return false
-        }
-        
-        // 首先检查国家代码是否为CN
-        if countryCode != "CN" {
-            return false
-        }
-        
-        // 检查中国运营商MCC和MNC
-        guard let mcc = carrier.mobileCountryCode, let mnc = carrier.mobileNetworkCode else {
-            return false
-        }
-        
-        // 中国移动
-        let chinaMobileMNCs = ["00", "02", "04", "07", "08"]
-        // 中国联通
-        let chinaUnicomMNCs = ["01", "06", "09"]
-        // 中国电信
-        let chinaTelecomMNCs = ["03", "05", "11"]
-        
-        // 中国MCC代码为460
-        if mcc == "460" {
-            if chinaMobileMNCs.contains(mnc) || chinaUnicomMNCs.contains(mnc) || chinaTelecomMNCs.contains(mnc) {
-                return true
-            }
-        }
-        
-        return false
-    }
 }

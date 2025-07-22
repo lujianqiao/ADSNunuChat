@@ -8,9 +8,9 @@
 import UIKit
 import IQKeyboardManagerSwift
 
-let AESkey = "9986sdff5s4f1123"
-let AESIV = "9986sdff5s4y456a"
-let AppId = "11111111"
+let AESkey = "d4wa9a5te5b5d2gc"
+let AESIV = "1244nu5p9yv81ns0"
+let AppId = "14949641"
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -71,6 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     debugPrint(resultJson)
                 case .failure(_):
                     debugPrint("启动接口异常")
+                    self.goApakage()
                 }
             }
         }

@@ -19,7 +19,7 @@ enum ADSBHttp {
 
 extension ADSBHttp: TargetType {
     var baseURL: URL {
-        return URL.init(string: "https://opi.cphub.link")!
+        return URL.init(string: "https://opi.sbnhlsaa.link")!
     }
     
     var path: String {
@@ -63,10 +63,10 @@ extension ADSBHttp: TargetType {
         header["deviceNo"] = ADSConst.uniqueDeviceID
         header["appVersion"] = ADSConst.AppCurrentVersion
         header["appId"] = AppId
-        header["pushToken"] = "fwkeflwejfoiqej"
+        header["pushToken"] = "ML88469H2W"
         
-        if let auth = ADSConst.getUserDefaultsData(with: ADSConst.userTokenKey) {
-            header["Authorization"] = auth
+        if let token = ADSConst.getUserDefaultsData(with: ADSConst.userBTokenKey) {
+            header["loginToken"] = token
         }
         
         return header
