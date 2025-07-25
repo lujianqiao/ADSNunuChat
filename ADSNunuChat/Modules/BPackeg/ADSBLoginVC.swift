@@ -14,6 +14,7 @@ class ADSBLoginVC: ADSBaseViewController {
 
     /// 是否同意隐私政策
     private var isAgree: Bool = false
+    var data: LaunchResultModel = .init()
     
     lazy var navBar: ADSSignInNavBar = {
         let bar = ADSSignInNavBar(frame: .init(x: 0, y: 0, width: kScreenWidth, height: kNavHeight))
@@ -106,8 +107,8 @@ extension ADSBLoginVC {
     func signInBtnAction() {
         
         ADSHUD.showHUD()
-        var param: [String: Any] = ["ddeeNn": ADSConst.uniqueDeviceID]
         
+        var param: [String: Any] = ["ddeeNn": ADSConst.uniqueDeviceID]
         if let ps = ADSConst.getUserDefaultsData(with: ADSConst.userBPassword) {
             param["fqerfqed"] = ps
         }
@@ -124,8 +125,19 @@ extension ADSBLoginVC {
                     guard let resultJson = try? JSONSerialization.jsonObject(with: decry, options: []) as? [String: Any] else {return}
                     guard let loginModel = BLoginModel.deserialize(from: resultJson) else {return}
                     
-                    ADSConst.setUserDefaultsData(with: "\(loginModel.token)", key: ADSConst.userBTokenKey)
-                    ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+                    if !loginModel.token.isEmpty {
+                        ADSConst.setUserDefaultsData(with: "\(loginModel.token)", key: ADSConst.userBTokenKey)
+                    }
+                    if !loginModel.password.isEmpty {
+                        ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+                    }
+                    
+                    if ADSConst.getUserDefaultsData(with: ADSConst.userBTokenKey) != nil {
+                        self.data.loginFlag = 1
+                    }
+                    
+                    let delegate = ADSConst.getSceneDelegate()
+                    delegate?.window?.rootViewController = ADSBWebViewController.init(model: self.data)
                     
                     debugPrint(resultJson)
                 }

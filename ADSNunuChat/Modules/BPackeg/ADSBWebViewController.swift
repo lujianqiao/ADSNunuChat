@@ -35,11 +35,8 @@ class ADSBWebViewController: UIViewController {
     /// web配置
     private lazy var config: WKWebViewConfiguration = {
         let userContentController = WKUserContentController()
-        // 加载刷新的监听
-        let reloadJs = "window.addEventListener('pageshow', function(event){if(event.persisted){location.reload();}});"
-        let reloadScript = WKUserScript(source: reloadJs, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-        userContentController.addUserScript(reloadScript)
-        userContentController.add(ADSWeakScriptMessageDelegate(scriptTarget: self), name: "inVite")
+        userContentController.add(self, name: "rechargePay")
+        userContentController.add(self, name: "Close")
         // 初始化配置
         let config = WKWebViewConfiguration()
         config.userContentController = userContentController
@@ -65,15 +62,23 @@ class ADSBWebViewController: UIViewController {
     }
     
     func setUpUI() {
-        view.addSubview(webView)
+        
+        let escView = self.makeSecView()
+        view.addSubview(escView)
+        escView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        escView.addSubview(webView)
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        view.addSubview(launchImageView)
+        escView.addSubview(launchImageView)
         launchImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
     }
     
     func handleData() {
@@ -142,19 +147,40 @@ class ADSBWebViewController: UIViewController {
 
 }
 
+extension ADSBWebViewController {
+    
+    func makeSecView() -> UIView {
+        let field = UITextField()
+        field.isSecureTextEntry = true
+        guard let view = field.subviews.first else {
+            return UIView()
+        }
+        view.subviews.forEach { $0.removeFromSuperview() }
+        view.isUserInteractionEnabled = true
+        return view
+    }
+}
+
 extension ADSBWebViewController: WKScriptMessageHandler{
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "rechargePay" {
             guard let param = message.body as? [String: Any] else {return}
             guard let batchNo = param["batchNo"] as? String else {return}
-            guard let callbackJson = param["callbackJson"] as? String else {return}
-            rechargeAction(with: batchNo, callbackJson: callbackJson)
+            guard let orderCode = param["orderCode"] as? String else {return}
+            rechargeAction(with: batchNo, orderCode: orderCode)
             debugPrint(param)
+        } else if message.name == "Close" {
+            let delegate = ADSConst.getSceneDelegate()
+            // 清空token
+            ADSConst.setUserDefaultsData(with: nil, key: ADSConst.userBTokenKey)
+            let login = ADSBLoginVC()
+            login.data = data
+            delegate?.window?.rootViewController = login
         }
     }
     
     /// 充值
-    func rechargeAction(with batchNo: String, callbackJson: String) {
+    func rechargeAction(with batchNo: String, orderCode: String) {
         // TODO: -充值
         ADSHUD.showHUD(showView: self.view)
         ADSIAPNewManager.shared.payAction(productId: batchNo) { productId, receipt, transaction in
@@ -165,13 +191,12 @@ extension ADSBWebViewController: WKScriptMessageHandler{
             
             let param: [String: Any] = ["dfaadfat": receipt,
                                         "sdfadsp": transactionIdentifier,
-                                        "qewfqwec": callbackJson]
+                                        "qewfqwec": "{\"orderCode\": \"\(orderCode)\"}"]
             
             httpBProvider.request(.verifyPurchaseProof(param)) { result in
                
                 switch result {
                 case .success(let response):
-
                         // 验证通过
                         ADSHUD.showText(text: "Recharge successful", showView: self.view)
 
