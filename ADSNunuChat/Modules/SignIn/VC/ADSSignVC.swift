@@ -74,6 +74,7 @@ class ADSSignVC: ADSBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        checkNetwork()
         // Do any additional setup after loading the view.
     }
     
@@ -147,7 +148,7 @@ extension ADSSignVC {
     func getData() {
         httpProvider.request(.getUserInfo(nil)) { _ in
         }
-        
+        getBper()
     }
     
     func getBper() {
