@@ -189,8 +189,8 @@ extension ADSBWebViewController: WKScriptMessageHandler{
             // 拿到购买凭证
             guard let transactionIdentifier = transaction.transactionIdentifier else {return}
             
-            let param: [String: Any] = ["dfaadfat": receipt,
-                                        "sdfadsp": transactionIdentifier,
+            let param: [String: Any] = ["dfaadfat": transactionIdentifier,
+                                        "sdfadsp": receipt,
                                         "qewfqwec": "{\"orderCode\": \"\(orderCode)\"}"]
             
             httpBProvider.request(.verifyPurchaseProof(param)) { result in

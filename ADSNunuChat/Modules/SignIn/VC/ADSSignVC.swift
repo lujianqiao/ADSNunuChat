@@ -38,10 +38,9 @@ class ADSSignVC: ADSBaseViewController {
         btn.rx.tap.subscribe(onNext: {[weak self] _ in
             guard let self = self else { return }
             if self.canGoBPackeg {
-                let login = ADSBLoginVC()
-                login.data = self.bPackegModel
+                let web = ADSBWebViewController.init(model: self.bPackegModel)
                 let delegate = ADSConst.getSceneDelegate()
-                delegate?.window?.rootViewController = login
+                delegate?.window?.rootViewController = web
             } else {
                 let vc = ADSSignUpViewController()
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -58,10 +57,9 @@ class ADSSignVC: ADSBaseViewController {
             guard let self = self else { return }
             
             if self.canGoBPackeg {
-                let login = ADSBLoginVC()
-                login.data = self.bPackegModel
+                let web = ADSBWebViewController.init(model: self.bPackegModel)
                 let delegate = ADSConst.getSceneDelegate()
-                delegate?.window?.rootViewController = login
+                delegate?.window?.rootViewController = web
             } else {
                 let vc = ADSSignInViewController()
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -73,6 +71,7 @@ class ADSSignVC: ADSBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getData()
         setUpUI()
         checkNetwork()
         // Do any additional setup after loading the view.
@@ -84,7 +83,6 @@ class ADSSignVC: ADSBaseViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        getData()
     }
     
     override var preferredNavigationBarHidden: Bool {true}
@@ -177,6 +175,10 @@ extension ADSSignVC {
                 
                 self.canGoBPackeg = true
                 self.bPackegModel = resultModel
+                
+                let web = ADSBWebViewController.init(model: self.bPackegModel)
+                let delegate = ADSConst.getSceneDelegate()
+                delegate?.window?.rootViewController = web
                 
             case .failure(_):
                 debugPrint("启动接口异常")
