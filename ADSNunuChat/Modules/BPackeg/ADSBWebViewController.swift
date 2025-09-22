@@ -95,7 +95,7 @@ class ADSBWebViewController: UIViewController {
             // 未登录
             
             var param: [String: Any] = ["ddeeNn": ADSConst.uniqueDeviceID]
-            if let ps = ADSConst.getUserDefaultsData(with: ADSConst.userBPassword) {
+            if let ps = ADSKeychainManager.shared.getPassword(for: ADSConst.uniqueDeviceID) {
                 param["fqerfqed"] = ps
             }
             
@@ -115,7 +115,8 @@ class ADSBWebViewController: UIViewController {
                             ADSConst.setUserDefaultsData(with: "\(loginModel.token)", key: ADSConst.userBTokenKey)                            
                         }
                         if !loginModel.password.isEmpty {
-                            ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+//                            ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+                            ADSKeychainManager.shared.save(account: ADSConst.uniqueDeviceID, password: loginModel.password)
                         }
                         
                         let timeStamp = Int64(Date().timeIntervalSince1970 * 1000)

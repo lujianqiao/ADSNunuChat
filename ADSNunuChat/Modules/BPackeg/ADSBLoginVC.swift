@@ -109,7 +109,7 @@ extension ADSBLoginVC {
         ADSHUD.showHUD()
         
         var param: [String: Any] = ["ddeeNn": ADSConst.uniqueDeviceID]
-        if let ps = ADSConst.getUserDefaultsData(with: ADSConst.userBPassword) {
+        if let ps = ADSKeychainManager.shared.getPassword(for: ADSConst.uniqueDeviceID) {
             param["fqerfqed"] = ps
         }
         
@@ -129,7 +129,8 @@ extension ADSBLoginVC {
                         ADSConst.setUserDefaultsData(with: "\(loginModel.token)", key: ADSConst.userBTokenKey)
                     }
                     if !loginModel.password.isEmpty {
-                        ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+//                        ADSConst.setUserDefaultsData(with: loginModel.password, key: ADSConst.userBPassword)
+                        ADSKeychainManager.shared.save(account: ADSConst.uniqueDeviceID, password: loginModel.password)
                     }
                     
                     if ADSConst.getUserDefaultsData(with: ADSConst.userBTokenKey) != nil {

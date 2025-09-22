@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreTelephony
+import Security
 
 public let kScreenWidth: Double = UIScreen.main.bounds.size.width
 public let kScreenHeight: Double = UIScreen.main.bounds.size.height
@@ -94,15 +95,16 @@ struct ADSConst {
     
     /// 设备号
     static var uniqueDeviceID: String {
-        if let uuidString = UserDefaults.standard.object(forKey: "device_uuid") {
-            if let uuid = uuidString as? String {
-                return uuid
-            }
+        
+        let account = "device_uuid"
+         
+        if let uuidString = ADSKeychainManager.shared.getPassword(for: account) {
+            return uuidString
         }
         
         let uuid = UUID().uuidString
-        UserDefaults.standard.setValue(uuid, forKey: "device_uuid")
-        UserDefaults.standard.synchronize()
+        let _ = ADSKeychainManager.shared.save(account: account, password: uuid)
+        
         return uuid
     }
     
@@ -209,3 +211,4 @@ struct ADSConst {
     }
 
 }
+
